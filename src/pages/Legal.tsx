@@ -7,7 +7,7 @@ function Legal(props: PageProps) {
       <section className="public-page-heading">
         <p className="eyebrow">Legal</p>
         <h1>Legal and policies</h1>
-        <p>InEx Ledger is operated by Mejor Tech LLC. These documents explain the service rules and privacy practices.</p>
+        <p>These documents explain the service rules and privacy practices for InEx Ledger.</p>
       </section>
 
       <section className="legal-link-grid">

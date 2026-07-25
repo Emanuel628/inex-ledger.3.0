@@ -4,7 +4,7 @@ import type { PageProps } from '../App'
 import AppShell from '../components/AppShell'
 
 const businesses = [
-  { name: 'Mejor Tech LLC', role: 'Billing owner', status: 'Active' },
+  { name: 'Sample Studio LLC', role: 'Billing owner', status: 'Active' },
 ]
 
 function Subscription(props: PageProps) {

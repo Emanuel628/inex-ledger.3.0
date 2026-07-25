@@ -146,7 +146,7 @@ function AppShell({
 
           <button className="business-button" type="button">
             <Building2 size={18} />
-            <span>Mejor Tech LLC</span>
+            <span>Sample Studio LLC</span>
             <ChevronDown size={16} />
           </button>
 
@@ -180,7 +180,7 @@ function AppShell({
               }}
             >
               <div className="user-avatar">E</div>
-              <span>Emanuel</span>
+              <span>Alex</span>
               <ChevronDown size={16} />
             </button>
             {userMenuOpen ? (

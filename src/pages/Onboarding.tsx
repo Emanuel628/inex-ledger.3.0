@@ -26,7 +26,7 @@ function Onboarding(props: PageProps) {
       <form className="auth-form" onSubmit={(event) => event.preventDefault()}>
         <label>
           Business name
-          <input placeholder="Mejor Tech LLC" />
+          <input placeholder="Sample Studio LLC" />
         </label>
         <div className="auth-form-grid">
           <label>

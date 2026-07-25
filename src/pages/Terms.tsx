@@ -2,7 +2,7 @@ import type { PageProps } from '../App'
 import PublicShell from '../components/PublicShell'
 
 const termsSections = [
-  ['Contracting party and notices', 'These terms are between you and Mejor Tech LLC, which operates InEx Ledger. Account, billing, operational, and legal notices may be sent electronically through the service or to your account email.'],
+  ['Contracting party and notices', 'These terms are between you and the company operating InEx Ledger. Account, billing, operational, and legal notices may be sent electronically through the service or to your account email.'],
   ['Eligibility and account responsibility', 'You must provide accurate registration, billing, and business information, keep credentials secure, and remain responsible for activity through your account and invited collaborators.'],
   ['Service scope', 'InEx Ledger is bookkeeping and recordkeeping software. It is not a law firm, accounting firm, tax preparer, payroll processor, fiduciary, or regulated professional adviser.'],
   ['Your data', 'You retain ownership of the records and files you submit. You remain responsible for accuracy, legality, supporting documentation, exports, filings, and professional review before relying on the information.'],

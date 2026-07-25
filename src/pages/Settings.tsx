@@ -90,8 +90,8 @@ function AccountSettings({ onNavigate }: { onNavigate: PageProps['onNavigate'] }
       description="Keep the account owner details clean. Email and password changes should stay deliberate."
     >
       <div className="settings-form-grid">
-        <Field label="Full name" value="Emanuel Castro" />
-        <Field label="Account email" value="emanuel@example.com" type="email" />
+        <Field label="Full name" value="Alex Morgan" />
+        <Field label="Account email" value="alex@example.com" type="email" />
       </div>
       <SettingsRow icon={Mail} title="Change email" description="Require confirmation before the new address becomes active.">
         <button className="secondary-button" type="button" onClick={() => onNavigate('ChangeEmail')}>Update email</button>
@@ -114,8 +114,8 @@ function BusinessSettings() {
       description="These details drive tax categories, exports, invoices, and business switching."
     >
       <div className="settings-form-grid">
-        <Field label="Business name" value="Mejor Tech LLC" />
-        <Field label="Contact name" value="Emanuel Castro" />
+        <Field label="Business name" value="Sample Studio LLC" />
+        <Field label="Contact name" value="Alex Morgan" />
         <SelectField label="Business type" value="Single-member LLC" options={['Sole proprietor', 'Single-member LLC', 'LLC', 'Corporation', 'Partnership']} />
         <Field label="Fiscal year start" value="2026-01-01" type="date" />
         <Field label="Operating name" placeholder="Optional DBA" />

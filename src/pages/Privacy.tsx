@@ -2,7 +2,7 @@ import type { PageProps } from '../App'
 import PublicShell from '../components/PublicShell'
 
 const privacySections = [
-  ['Who controls your information', 'Mejor Tech LLC, operating as InEx Ledger, is responsible for personal information handled through the website, application, billing flows, support channels, and related services.'],
+  ['Who controls your information', 'The company operating InEx Ledger is responsible for personal information handled through the website, application, billing flows, support channels, and related services.'],
   ['Information we collect', 'We collect account details, business profile details, bookkeeping records, billing metadata, security events, support messages, uploaded receipts, exports, and preferences you submit or create while using the service.'],
   ['How we use information', 'We use information to provide and secure the service, manage accounts and subscriptions, organize records, generate exports, deliver support, prevent abuse, and satisfy legal or operational obligations.'],
   ['How we disclose information', 'We do not sell personal information or use bookkeeping data for targeted advertising. We disclose information to service providers, authorized collaborators, legal advisers, authorities when required, and business-transfer counterparties under appropriate restrictions.'],

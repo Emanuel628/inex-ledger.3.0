@@ -51,7 +51,7 @@ function Billing(props: PageProps) {
 
         <section className="billing-action-grid">
           <BillingAction icon={ExternalLink} title="Stripe portal" description="Update cards, download official invoices, or cancel in Stripe." action="Open portal" />
-          <BillingAction icon={ShieldCheck} title="Billing owner" description="Mejor Tech LLC owns the current Stripe relationship." action="Review owner" />
+          <BillingAction icon={ShieldCheck} title="Billing owner" description="Sample Studio LLC owns the current Stripe relationship." action="Review owner" />
           <BillingAction icon={FileText} title="Tax receipts" description="Keep subscription receipts separate from customer invoices." action="Download" />
         </section>
 

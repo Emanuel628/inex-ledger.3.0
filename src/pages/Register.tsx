@@ -13,11 +13,11 @@ function Register(props: PageProps) {
         <div className="auth-form-grid">
           <label>
             First name
-            <input autoComplete="given-name" placeholder="Emanuel" />
+            <input autoComplete="given-name" placeholder="Alex" />
           </label>
           <label>
             Last name
-            <input autoComplete="family-name" placeholder="Castro" />
+            <input autoComplete="family-name" placeholder="Morgan" />
           </label>
         </div>
         <label>
