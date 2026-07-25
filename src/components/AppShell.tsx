@@ -46,6 +46,7 @@ function AppShell({
   onNavigate,
   sidebarCollapsed,
   setSidebarCollapsed,
+  theme,
   searchPlaceholder,
   children,
   overlay,
@@ -55,7 +56,10 @@ function AppShell({
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   return (
-    <div className={`ledger-shell ${sidebarCollapsed ? 'sidebar-is-collapsed' : ''} ${mobileNavOpen ? 'mobile-nav-is-open' : ''}`}>
+    <div
+      className={`ledger-shell ${sidebarCollapsed ? 'sidebar-is-collapsed' : ''} ${mobileNavOpen ? 'mobile-nav-is-open' : ''}`}
+      data-theme={theme}
+    >
       <aside className="app-sidebar" aria-label="Main navigation">
         <div className="brand-row">
           <div className="brand-mark" aria-hidden="true">

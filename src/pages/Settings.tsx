@@ -17,7 +17,7 @@ import {
   UserRound,
   type LucideIcon,
 } from 'lucide-react'
-import type { PageProps } from '../App'
+import type { PageProps, ThemeMode } from '../App'
 import AppShell from '../components/AppShell'
 
 type SettingsSection = 'Account' | 'Business' | 'Billing' | 'Security' | 'Preferences' | 'Data'
@@ -72,7 +72,7 @@ function Settings(props: PageProps) {
             {activeSection === 'Business' ? <BusinessSettings /> : null}
             {activeSection === 'Billing' ? <BillingSettings /> : null}
             {activeSection === 'Security' ? <SecuritySettings /> : null}
-            {activeSection === 'Preferences' ? <PreferenceSettings /> : null}
+            {activeSection === 'Preferences' ? <PreferenceSettings theme={props.theme} setTheme={props.setTheme} /> : null}
             {activeSection === 'Data' ? <DataSettings /> : null}
           </div>
         </section>
@@ -173,7 +173,7 @@ function SecuritySettings() {
   )
 }
 
-function PreferenceSettings() {
+function PreferenceSettings({ theme, setTheme }: { theme: ThemeMode; setTheme: PageProps['setTheme'] }) {
   return (
     <SettingsPanel
       eyebrow="Preferences"
@@ -186,7 +186,12 @@ function PreferenceSettings() {
         <SelectField label="Currency" value="USD" options={['USD', 'CAD']} />
         <SelectField label="Distance units" value="Miles" options={['Miles', 'Kilometers']} />
         <SelectField label="Timezone" value="America/New_York" options={['America/New_York', 'America/Chicago', 'America/Los_Angeles']} />
-        <SelectField label="Theme" value="System" options={['System', 'Light', 'Dark']} />
+        <SelectField
+          label="Theme"
+          value={theme === 'dark' ? 'Dark' : 'Light'}
+          options={['Light', 'Dark']}
+          onChange={(value) => setTheme(value === 'Dark' ? 'dark' : 'light')}
+        />
       </div>
       <SettingsRow icon={Bell} title="Notifications" description="Choose which billing, support, invoice, and export events send alerts.">
         <button className="secondary-button" type="button">Manage alerts</button>
@@ -269,11 +274,25 @@ function Field({ label, value, placeholder, type = 'text' }: { label: string; va
   )
 }
 
-function SelectField({ label, value, options }: { label: string; value: string; options: string[] }) {
+function SelectField({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string
+  value: string
+  options: string[]
+  onChange?: (value: string) => void
+}) {
   return (
     <label className="settings-field">
       <span>{label}</span>
-      <select defaultValue={value}>
+      <select
+        {...(onChange
+          ? { value, onChange: (event) => onChange(event.target.value) }
+          : { defaultValue: value })}
+      >
         {options.map((option) => (
           <option key={option} value={option}>{option}</option>
         ))}

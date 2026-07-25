@@ -23,22 +23,29 @@ export type AppPage =
   | 'Messages'
   | 'Settings'
 
+export type ThemeMode = 'light' | 'dark'
+
 export type PageProps = {
   activePage: AppPage
   onNavigate: (page: AppPage) => void
   sidebarCollapsed: boolean
   setSidebarCollapsed: Dispatch<SetStateAction<boolean>>
+  theme: ThemeMode
+  setTheme: Dispatch<SetStateAction<ThemeMode>>
 }
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('Transactions')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [theme, setTheme] = useState<ThemeMode>('light')
 
   const pageProps = {
     activePage: currentPage,
     onNavigate: setCurrentPage,
     sidebarCollapsed,
     setSidebarCollapsed,
+    theme,
+    setTheme,
   }
 
   if (currentPage === 'Accounts') {
