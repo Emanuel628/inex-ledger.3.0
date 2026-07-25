@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   AlertTriangle,
   Calendar,
+  CheckCircle2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -12,6 +13,7 @@ import {
   MoreHorizontal,
   Package,
   Plus,
+  ReceiptText,
   Search,
   ShoppingBag,
   TrendingDown,
@@ -36,6 +38,16 @@ type Transaction = {
   status: TransactionStatus
   amount: number
   merchantTone: string
+}
+
+type TransactionDraft = {
+  kind: 'Income' | 'Expense'
+  amount: string
+  description: string
+  date: string
+  category: string
+  account: string
+  note: string
 }
 
 const transactions: Transaction[] = [
@@ -110,19 +122,49 @@ const transactions: Transaction[] = [
 function Transactions(props: PageProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [expandedPanel, setExpandedPanel] = useState<string | null>(null)
+  const [transactionRows, setTransactionRows] = useState<Transaction[]>(transactions)
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+  const [actionMenuId, setActionMenuId] = useState<number | null>(null)
   const [noticeVisible, dismissNotice] = useSessionDismissed('transactions-review')
 
   useEffect(() => {
-    document.body.classList.toggle('modal-is-open', drawerOpen)
+    document.body.classList.toggle('modal-is-open', drawerOpen || Boolean(selectedTransaction))
 
     return () => document.body.classList.remove('modal-is-open')
-  }, [drawerOpen])
+  }, [drawerOpen, selectedTransaction])
 
   return (
     <AppShell
       {...props}
       searchPlaceholder="Search transactions, merchants, categories"
-      overlay={drawerOpen ? <TransactionDrawer onClose={() => setDrawerOpen(false)} /> : null}
+      overlay={
+        <>
+          {drawerOpen ? (
+            <TransactionDrawer
+              onClose={() => setDrawerOpen(false)}
+              onSave={(transaction) => {
+                setTransactionRows((rows) => [transaction, ...rows])
+                setDrawerOpen(false)
+              }}
+              nextId={Math.max(...transactionRows.map((row) => row.id), 0) + 1}
+            />
+          ) : null}
+          {selectedTransaction ? (
+            <TransactionDetailsModal
+              transaction={selectedTransaction}
+              onClose={() => setSelectedTransaction(null)}
+              onUpdate={(updated) => {
+                setTransactionRows((rows) => rows.map((row) => (row.id === updated.id ? updated : row)))
+                setSelectedTransaction(updated)
+              }}
+              onDelete={() => {
+                setTransactionRows((rows) => rows.filter((row) => row.id !== selectedTransaction.id))
+                setSelectedTransaction(null)
+              }}
+            />
+          ) : null}
+        </>
+      }
     >
         <main className="transactions-page">
           <section className="page-heading">
@@ -196,7 +238,7 @@ function Transactions(props: PageProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactions.map((transaction) => (
+                  {transactionRows.map((transaction) => (
                     <tr key={transaction.id}>
                       <td data-label="Date">{transaction.date}</td>
                       <td data-label="Description">
@@ -222,9 +264,60 @@ function Transactions(props: PageProps) {
                         {formatMoney(transaction.amount)}
                       </td>
                       <td data-label="Actions" className="action-col">
-                        <button className="row-action" type="button" aria-label={`Actions for ${transaction.description}`}>
+                        <button
+                          className="row-action"
+                          type="button"
+                          aria-label={`Actions for ${transaction.description}`}
+                          aria-expanded={actionMenuId === transaction.id}
+                          onClick={() => setActionMenuId((id) => (id === transaction.id ? null : transaction.id))}
+                        >
                           <MoreHorizontal size={18} />
                         </button>
+                        {actionMenuId === transaction.id ? (
+                          <div className="row-action-menu">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedTransaction(transaction)
+                                setActionMenuId(null)
+                              }}
+                            >
+                              View details
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setTransactionRows((rows) => rows.map((row) => (
+                                  row.id === transaction.id ? { ...row, status: 'Cleared' } : row
+                                )))
+                                setActionMenuId(null)
+                              }}
+                            >
+                              Mark cleared
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setTransactionRows((rows) => rows.map((row) => (
+                                  row.id === transaction.id ? { ...row, receipt: 'Attached', status: 'Cleared' } : row
+                                )))
+                                setActionMenuId(null)
+                              }}
+                            >
+                              Attach receipt
+                            </button>
+                            <button
+                              className="is-danger"
+                              type="button"
+                              onClick={() => {
+                                setTransactionRows((rows) => rows.filter((row) => row.id !== transaction.id))
+                                setActionMenuId(null)
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ) : null}
                       </td>
                     </tr>
                   ))}
@@ -233,7 +326,7 @@ function Transactions(props: PageProps) {
             </div>
 
             <div className="table-footer">
-              <span>Showing 1 to 6 of 102 transactions</span>
+              <span>Showing 1 to {transactionRows.length} of {transactionRows.length} transactions</span>
               <div className="pagination" aria-label="Pagination">
                 <button type="button" aria-label="Previous page">
                   <ChevronLeft size={16} />
@@ -344,7 +437,54 @@ function ProgressivePanel({
   )
 }
 
-function TransactionDrawer({ onClose }: { onClose: () => void }) {
+const emptyDraft: TransactionDraft = {
+  kind: 'Income',
+  amount: '',
+  description: '',
+  date: '',
+  category: '',
+  account: '',
+  note: '',
+}
+
+function TransactionDrawer({
+  onClose,
+  onSave,
+  nextId,
+}: {
+  onClose: () => void
+  onSave: (transaction: Transaction) => void
+  nextId: number
+}) {
+  const [draft, setDraft] = useState<TransactionDraft>(emptyDraft)
+  const [error, setError] = useState('')
+  const isIncome = draft.kind === 'Income'
+
+  function updateDraft<K extends keyof TransactionDraft>(key: K, value: TransactionDraft[K]) {
+    setDraft((current) => ({ ...current, [key]: value }))
+    setError('')
+  }
+
+  function saveTransaction() {
+    const numericAmount = Number(draft.amount.replace(/[$,]/g, ''))
+    if (!draft.description.trim() || !Number.isFinite(numericAmount) || numericAmount <= 0) {
+      setError('Add a description and a valid amount.')
+      return
+    }
+
+    onSave({
+      id: nextId,
+      date: draft.date ? formatShortDate(draft.date) : 'Today',
+      description: draft.description.trim(),
+      category: draft.category || draft.kind,
+      account: draft.account || 'Checking',
+      receipt: 'Missing',
+      status: draft.kind === 'Income' ? 'Cleared' : 'Needs review',
+      amount: isIncome ? numericAmount : -numericAmount,
+      merchantTone: isIncome ? 'green' : 'blue',
+    })
+  }
+
   return (
     <div className="drawer-backdrop" role="presentation" onMouseDown={onClose}>
       <aside className="transaction-drawer" aria-label="Add transaction" onMouseDown={(event) => event.stopPropagation()}>
@@ -359,33 +499,50 @@ function TransactionDrawer({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="transaction-type-toggle" role="group" aria-label="Transaction type">
-          <button className="is-selected" type="button">Income</button>
-          <button type="button">Expense</button>
+          <button className={isIncome ? 'is-selected' : ''} type="button" onClick={() => updateDraft('kind', 'Income')}>Income</button>
+          <button className={!isIncome ? 'is-selected' : ''} type="button" onClick={() => updateDraft('kind', 'Expense')}>Expense</button>
         </div>
 
         <form className="drawer-form" onSubmit={(event) => event.preventDefault()}>
           <label>
             Amount
-            <input placeholder="$0.00" />
+            <input
+              inputMode="decimal"
+              placeholder="$0.00"
+              value={draft.amount}
+              onChange={(event) => updateDraft('amount', event.target.value)}
+            />
           </label>
           <label>
             Description
-            <input placeholder="Merchant or payer" />
+            <input
+              placeholder="Merchant or payer"
+              value={draft.description}
+              onChange={(event) => updateDraft('description', event.target.value)}
+            />
           </label>
           <label>
             Date
-            <input type="date" />
+            <input type="date" value={draft.date} onChange={(event) => updateDraft('date', event.target.value)} />
           </label>
           <label>
             Category
-            <select>
-              <option>Select category</option>
+            <select value={draft.category} onChange={(event) => updateDraft('category', event.target.value)}>
+              <option value="">Select category</option>
+              <option value="Income">Income</option>
+              <option value="Software">Software</option>
+              <option value="Fuel">Fuel</option>
+              <option value="Meals">Meals</option>
+              <option value="Office">Office</option>
             </select>
           </label>
           <label>
             Account
-            <select>
-              <option>Select account</option>
+            <select value={draft.account} onChange={(event) => updateDraft('account', event.target.value)}>
+              <option value="">Select account</option>
+              <option value="Checking">Checking</option>
+              <option value="Business Card">Business Card</option>
+              <option value="Cash">Cash</option>
             </select>
           </label>
           <details>
@@ -395,20 +552,80 @@ function TransactionDrawer({ onClose }: { onClose: () => void }) {
                 <Upload size={17} />
                 Attach receipt
               </button>
-              <textarea placeholder="Internal note" />
+              <textarea
+                placeholder="Internal note"
+                value={draft.note}
+                onChange={(event) => updateDraft('note', event.target.value)}
+              />
             </div>
           </details>
+          {error ? <p className="drawer-error" role="alert">{error}</p> : null}
         </form>
 
         <div className="drawer-actions">
           <button className="secondary-button" type="button" onClick={onClose}>
             Cancel
           </button>
-          <button className="primary-button" type="button">
+          <button className="primary-button" type="button" onClick={saveTransaction}>
             Save transaction
           </button>
         </div>
       </aside>
+    </div>
+  )
+}
+
+function TransactionDetailsModal({
+  transaction,
+  onClose,
+  onUpdate,
+  onDelete,
+}: {
+  transaction: Transaction
+  onClose: () => void
+  onUpdate: (transaction: Transaction) => void
+  onDelete: () => void
+}) {
+  return (
+    <div className="transaction-modal-backdrop" role="presentation" onMouseDown={onClose}>
+      <section
+        className="transaction-detail-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="transactionDetailTitle"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <div className="drawer-header">
+          <div>
+            <h2 id="transactionDetailTitle">{transaction.description}</h2>
+            <p>{transaction.date} - {transaction.account}</p>
+          </div>
+          <button className="icon-button" type="button" aria-label="Close transaction details" onClick={onClose}>
+            <X size={18} />
+          </button>
+        </div>
+        <div className="transaction-detail-body">
+          <div className={`transaction-detail-amount ${transaction.amount >= 0 ? 'is-positive' : 'is-negative'}`}>
+            {formatMoney(transaction.amount)}
+          </div>
+          <dl className="transaction-detail-list">
+            <div><dt>Category</dt><dd>{transaction.category}</dd></div>
+            <div><dt>Receipt</dt><dd>{transaction.receipt}</dd></div>
+            <div><dt>Status</dt><dd><StatusPill status={transaction.status} /></dd></div>
+          </dl>
+          <div className="transaction-detail-actions">
+            <button className="secondary-button" type="button" onClick={() => onUpdate({ ...transaction, status: 'Cleared' })}>
+              <CheckCircle2 size={17} />
+              Mark cleared
+            </button>
+            <button className="secondary-button" type="button" onClick={() => onUpdate({ ...transaction, receipt: 'Attached', status: 'Cleared' })}>
+              <ReceiptText size={17} />
+              Attach receipt
+            </button>
+            <button className="secondary-button danger-button" type="button" onClick={onDelete}>Delete</button>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
@@ -424,6 +641,11 @@ function formatMoney(value: number) {
 
 function getMerchantInitial(description: string) {
   return description.trim().charAt(0).toUpperCase()
+}
+
+function formatShortDate(date: string) {
+  const parsed = new Date(`${date}T00:00:00`)
+  return parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
 export default Transactions

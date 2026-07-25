@@ -18,6 +18,7 @@ import {
   Search,
   Settings as SettingsIcon,
   Tags,
+  X,
   type LucideIcon,
 } from 'lucide-react'
 import type { AppPage, PageProps } from '../App'
@@ -33,6 +34,11 @@ const navItems = [
   { label: 'Analytics', icon: ChartNoAxesCombined },
   { label: 'Messages', icon: MessageSquare },
 ] satisfies { label: AppPage; icon: LucideIcon }[]
+
+const initialNotifications = [
+  { id: 1, title: 'Transactions need review', body: '3 items are missing receipts or business-use details.', page: 'Transactions' },
+  { id: 2, title: 'Export package ready', body: 'Your latest protected export can be reviewed.', page: 'Exports' },
+] satisfies { id: number; title: string; body: string; page: AppPage }[]
 
 type AppShellProps = PageProps & {
   searchPlaceholder: string
@@ -54,6 +60,14 @@ function AppShell({
 }: AppShellProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [notifications, setNotifications] = useState(initialNotifications)
+  const goToPage = (page: AppPage) => {
+    onNavigate(page)
+    setMobileNavOpen(false)
+    setUserMenuOpen(false)
+    setNotificationsOpen(false)
+  }
 
   return (
     <div
@@ -78,8 +92,7 @@ function AppShell({
               key={label}
               type="button"
               onClick={() => {
-                onNavigate(label)
-                setMobileNavOpen(false)
+                goToPage(label)
               }}
             >
               <Icon size={19} />
@@ -143,16 +156,28 @@ function AppShell({
           </div>
 
           <div className="topbar-actions">
-            <button className="icon-button" type="button" aria-label="Notifications">
+            <button
+              className="icon-button"
+              type="button"
+              aria-label="Notifications"
+              aria-expanded={notificationsOpen}
+              onClick={() => {
+                setNotificationsOpen((value) => !value)
+                setUserMenuOpen(false)
+              }}
+            >
               <Bell size={18} />
-              <span className="notification-dot">2</span>
+              {notifications.length ? <span className="notification-dot">{notifications.length}</span> : null}
             </button>
             <button
               className="user-menu"
               type="button"
               aria-label="User menu"
               aria-expanded={userMenuOpen}
-              onClick={() => setUserMenuOpen((value) => !value)}
+              onClick={() => {
+                setUserMenuOpen((value) => !value)
+                setNotificationsOpen(false)
+              }}
             >
               <div className="user-avatar">E</div>
               <span>Emanuel</span>
@@ -164,8 +189,7 @@ function AppShell({
                   type="button"
                   role="menuitem"
                   onClick={() => {
-                    onNavigate('Settings')
-                    setUserMenuOpen(false)
+                    goToPage('Settings')
                   }}
                 >
                   <SettingsIcon size={17} />
@@ -176,13 +200,50 @@ function AppShell({
                   type="button"
                   role="menuitem"
                   onClick={() => {
-                    onNavigate('Login')
-                    setUserMenuOpen(false)
+                    goToPage('Login')
                   }}
                 >
                   <LogOut size={17} />
                   <span>Sign out</span>
                 </button>
+              </div>
+            ) : null}
+            {notificationsOpen ? (
+              <div className="notification-menu" role="dialog" aria-label="Notifications">
+                <div className="notification-menu-head">
+                  <strong>Notifications</strong>
+                  <button className="icon-button" type="button" aria-label="Close notifications" onClick={() => setNotificationsOpen(false)}>
+                    <X size={16} />
+                  </button>
+                </div>
+                {notifications.length ? (
+                  <div className="notification-list">
+                    {notifications.map((notification) => (
+                      <button
+                        className="notification-item"
+                        type="button"
+                        key={notification.id}
+                        onClick={() => {
+                          goToPage(notification.page)
+                          setNotifications((items) => items.filter((item) => item.id !== notification.id))
+                        }}
+                      >
+                        <span />
+                        <div>
+                          <strong>{notification.title}</strong>
+                          <p>{notification.body}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="notification-empty">No unread notifications.</p>
+                )}
+                {notifications.length ? (
+                  <button className="notification-clear" type="button" onClick={() => setNotifications([])}>
+                    Mark all as read
+                  </button>
+                ) : null}
               </div>
             ) : null}
           </div>

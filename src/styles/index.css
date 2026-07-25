@@ -251,6 +251,87 @@ textarea:focus-visible {
   font-weight: 900;
 }
 
+.notification-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 45;
+  width: min(360px, calc(100vw - 28px));
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.notification-menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 2px 6px;
+}
+
+.notification-menu-head strong {
+  font-size: 14px;
+}
+
+.notification-menu-head .icon-button {
+  width: 32px;
+  min-height: 32px;
+}
+
+.notification-list {
+  display: grid;
+  gap: 6px;
+}
+
+.notification-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  text-align: left;
+}
+
+.notification-item > span {
+  width: 9px;
+  height: 9px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.notification-item strong {
+  display: block;
+  font-size: 13px;
+}
+
+.notification-item p,
+.notification-empty {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.notification-clear {
+  min-height: 36px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 850;
+}
+
 .mobile-menu {
   display: none;
 }
@@ -1019,6 +1100,7 @@ tbody tr:last-child td {
 
 .action-col {
   width: 76px;
+  position: relative;
   text-align: center;
 }
 
@@ -1037,6 +1119,41 @@ tbody tr:last-child td {
   border-color: var(--line);
   background: #ffffff;
   color: var(--ink);
+}
+
+.row-action-menu {
+  position: absolute;
+  top: calc(100% - 8px);
+  right: 14px;
+  z-index: 15;
+  width: 156px;
+  display: grid;
+  gap: 3px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.row-action-menu button {
+  min-height: 34px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.row-action-menu button:hover {
+  background: var(--surface-soft);
+}
+
+.row-action-menu .is-danger {
+  color: var(--red);
 }
 
 .receipt-actions {
@@ -1316,6 +1433,17 @@ tbody tr:last-child td {
   resize: vertical;
 }
 
+.drawer-error {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(216, 59, 59, 0.24);
+  border-radius: var(--radius);
+  background: rgba(216, 59, 59, 0.08);
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 850;
+}
+
 .drawer-form details {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1345,6 +1473,87 @@ tbody tr:last-child td {
   padding: 18px 24px;
   border-top: 1px solid var(--line);
   background: #ffffff;
+}
+
+.transaction-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow-y: auto;
+  background: rgba(7, 29, 58, 0.42);
+}
+
+.transaction-detail-modal {
+  width: min(520px, 100%);
+  max-height: calc(100dvh - 48px);
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 26px 70px rgba(7, 29, 58, 0.28);
+}
+
+.transaction-detail-body {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  overflow-y: auto;
+}
+
+.transaction-detail-amount {
+  font-size: 34px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.transaction-detail-amount.is-positive {
+  color: var(--green);
+}
+
+.transaction-detail-amount.is-negative {
+  color: var(--red);
+}
+
+.transaction-detail-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.transaction-detail-list div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+
+.transaction-detail-list dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.transaction-detail-list dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 850;
+  text-align: right;
+}
+
+.transaction-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .export-heading-actions {
@@ -3071,6 +3280,11 @@ tbody tr:last-child td {
 
   .action-col {
     width: auto;
+  }
+
+  .row-action-menu {
+    top: calc(100% + 6px);
+    right: 0;
   }
 
   .receipt-actions {

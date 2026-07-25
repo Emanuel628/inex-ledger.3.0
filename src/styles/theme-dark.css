@@ -29,6 +29,8 @@
   .business-button,
   .icon-button,
   .user-dropdown,
+  .notification-menu,
+  .row-action-menu,
   .summary-strip,
   .table-panel,
   .progressive-panel,
@@ -36,6 +38,7 @@
   .settings-panel,
   .secondary-button,
   .transaction-drawer,
+  .transaction-detail-modal,
   .drawer-actions,
   .export-card,
   .export-modal,
@@ -119,7 +122,10 @@
   .table-toolbar select,
   .per-page-button,
   .top-alert button,
-  .user-dropdown button:hover
+  .user-dropdown button:hover,
+  .row-action-menu button:hover,
+  .notification-item,
+  .transaction-detail-list div
 ) {
   background: var(--surface-soft);
   color: var(--ink);
@@ -192,7 +198,7 @@
   color: #ffb0b0;
 }
 
-.ledger-shell[data-theme="dark"] :is(.drawer-backdrop, .export-modal-backdrop, .message-modal-backdrop, .mobile-nav-backdrop) {
+.ledger-shell[data-theme="dark"] :is(.drawer-backdrop, .transaction-modal-backdrop, .export-modal-backdrop, .message-modal-backdrop, .mobile-nav-backdrop) {
   background: rgba(0, 0, 0, 0.58);
 }
 
