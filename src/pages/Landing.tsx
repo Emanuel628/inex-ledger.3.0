@@ -1,13 +1,18 @@
 import {
   ArrowRight,
   Ban,
+  Calendar,
   CheckCircle2,
+  ChevronDown,
   Download,
   FileSpreadsheet,
   FileText,
+  Filter,
   Globe2,
   LayoutGrid,
+  MoreHorizontal,
   Receipt,
+  Search,
   ShieldCheck,
   TrendingDown,
   TrendingUp,
@@ -38,22 +43,7 @@ function Landing(props: PageProps) {
           <p className="public-microcopy">No credit card required. Set up in minutes.</p>
         </div>
 
-        <article className="landing-preview" aria-label="Product preview">
-          <div className="landing-preview-head">
-            <strong>May summary</strong>
-            <span>Export ready</span>
-          </div>
-          <div className="landing-preview-stats">
-            <div><span>Income</span><strong className="is-positive">$6,420</strong></div>
-            <div><span>Expenses</span><strong className="is-negative">$2,180</strong></div>
-            <div><span>Net</span><strong>$4,240</strong></div>
-          </div>
-          <div className="landing-preview-list">
-            <span><Receipt size={17} /> 24 receipts attached</span>
-            <span><FileText size={17} /> 3 invoices paid</span>
-            <span><Download size={17} /> CSV and PDF exports</span>
-          </div>
-        </article>
+        <TransactionsPreview />
       </section>
 
       <section className="landing-trust-strip" aria-label="Trust signals">
@@ -166,6 +156,96 @@ function Landing(props: PageProps) {
         </div>
       </section>
     </PublicShell>
+  )
+}
+
+function TransactionsPreview() {
+  const rows = [
+    { date: 'May 31', merchant: 'Hartley Co. payment', category: 'Income', account: 'Checking', receipt: 'Uploaded', status: 'Cleared', amount: '+$1,800', tone: 'green' },
+    { date: 'May 29', merchant: 'Adobe Creative Cloud', category: 'Software', account: 'Business Card', receipt: 'Attached', status: 'Cleared', amount: '-$54.99', tone: 'red' },
+    { date: 'May 28', merchant: 'Wawa fuel', category: 'Fuel', account: 'Business Card', receipt: 'Missing', status: 'Needs review', amount: '-$62.40', tone: 'yellow' },
+    { date: 'May 24', merchant: 'Client lunch', category: 'Meals', account: 'Checking', receipt: 'Missing', status: 'Needs review', amount: '-$86.20', tone: 'coral' },
+  ]
+
+  return (
+    <article className="landing-transaction-preview" aria-label="Transactions page preview">
+      <div className="preview-page-heading">
+        <div>
+          <p className="eyebrow">Ledger</p>
+          <h2>Transactions</h2>
+          <p>Review money in and out. Everything else stays tucked away until needed.</p>
+        </div>
+        <button className="primary-button" type="button">
+          <span>+</span>
+          Add transaction
+        </button>
+      </div>
+
+      <div className="preview-summary-strip" aria-label="Transaction summary preview">
+        <PreviewSummary label="Income" value="$6,420" icon={TrendingUp} tone="income" />
+        <PreviewSummary label="Expenses" value="$2,180" icon={TrendingDown} tone="expense" />
+        <PreviewSummary label="Net" value="$4,240" icon={FileText} tone="net" />
+        <PreviewSummary label="Needs review" value="2" icon={ShieldCheck} tone="review" />
+      </div>
+
+      <div className="preview-alert">
+        <Receipt size={17} />
+        <div>
+          <strong>2 transactions need attention</strong>
+          <span>Missing receipts before export.</span>
+        </div>
+        <button type="button">Review</button>
+      </div>
+
+      <div className="preview-toolbar">
+        <label>
+          <Search size={16} />
+          <span>Search transactions</span>
+        </label>
+        <button type="button"><Calendar size={15} /> May 2024</button>
+        <button type="button"><Filter size={15} /> More filters</button>
+      </div>
+
+      <div className="preview-table" role="table" aria-label="Recent transactions preview">
+        <div className="preview-table-head" role="row">
+          <span>Date</span>
+          <span>Description</span>
+          <span>Category</span>
+          <span>Receipt</span>
+          <span>Status</span>
+          <span>Amount</span>
+          <span />
+        </div>
+        {rows.map((row) => (
+          <div className="preview-table-row" role="row" key={`${row.date}-${row.merchant}`}>
+            <span>{row.date}</span>
+            <span className="preview-merchant"><i className={`merchant-${row.tone}`}>{row.merchant.charAt(0)}</i>{row.merchant}</span>
+            <span>{row.category}</span>
+            <span>{row.receipt}</span>
+            <span className={`preview-status ${row.status === 'Cleared' ? 'is-cleared' : 'is-review'}`}>{row.status}</span>
+            <span className={row.amount.startsWith('+') ? 'is-positive' : 'is-negative'}>{row.amount}</span>
+            <span><MoreHorizontal size={16} /></span>
+          </div>
+        ))}
+      </div>
+
+      <div className="preview-footer">
+        <span>Showing 1 to 4 of 24 transactions</span>
+        <button type="button">20 per page <ChevronDown size={14} /></button>
+      </div>
+    </article>
+  )
+}
+
+function PreviewSummary({ label, value, icon: Icon, tone }: { label: string; value: string; icon: LucideIcon; tone: string }) {
+  return (
+    <div className={`preview-summary-item tone-${tone}`}>
+      <span><Icon size={18} /></span>
+      <div>
+        <small>{label}</small>
+        <strong>{value}</strong>
+      </div>
+    </div>
   )
 }
 
