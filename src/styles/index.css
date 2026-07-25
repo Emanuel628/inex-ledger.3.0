@@ -503,6 +503,8 @@ textarea:focus-visible {
   gap: 12px;
   padding: 18px;
   overflow: hidden;
+  pointer-events: none;
+  user-select: none;
 }
 
 .preview-page-heading {
@@ -539,7 +541,7 @@ textarea:focus-visible {
 
 .preview-summary-strip {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(118px, 1fr));
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
@@ -548,11 +550,11 @@ textarea:focus-visible {
 
 .preview-summary-item {
   min-width: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 9px;
-  align-items: center;
-  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  padding: 14px;
   border-right: 1px solid var(--line);
 }
 
@@ -561,8 +563,8 @@ textarea:focus-visible {
 }
 
 .preview-summary-item > span {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -577,7 +579,7 @@ textarea:focus-visible {
 
 .preview-summary-item small {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -585,8 +587,9 @@ textarea:focus-visible {
   display: block;
   margin-top: 2px;
   color: var(--ink);
-  font-size: clamp(17px, 2vw, 24px);
+  font-size: clamp(22px, 2.4vw, 32px);
   line-height: 1;
+  overflow-wrap: anywhere;
 }
 
 .preview-summary-item.tone-income > span {
@@ -656,7 +659,7 @@ textarea:focus-visible {
 
 .preview-toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
   gap: 8px;
 }
 

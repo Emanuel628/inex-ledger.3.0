@@ -175,7 +175,7 @@ function TransactionsPreview() {
           <h2>Transactions</h2>
           <p>Review money in and out. Everything else stays tucked away until needed.</p>
         </div>
-        <button className="primary-button" type="button">
+        <button className="primary-button" type="button" tabIndex={-1}>
           <span>+</span>
           Add transaction
         </button>
@@ -194,7 +194,7 @@ function TransactionsPreview() {
           <strong>2 transactions need attention</strong>
           <span>Missing receipts before export.</span>
         </div>
-        <button type="button">Review</button>
+        <button type="button" tabIndex={-1}>Review</button>
       </div>
 
       <div className="preview-toolbar">
@@ -202,8 +202,9 @@ function TransactionsPreview() {
           <Search size={16} />
           <span>Search transactions</span>
         </label>
-        <button type="button"><Calendar size={15} /> May 2024</button>
-        <button type="button"><Filter size={15} /> More filters</button>
+        <button type="button" tabIndex={-1}><Calendar size={15} /> May 2024</button>
+        <button type="button" tabIndex={-1}><Filter size={15} /> More filters</button>
+        <button type="button" tabIndex={-1}><Download size={15} /> Import CSV</button>
       </div>
 
       <div className="preview-table" role="table" aria-label="Recent transactions preview">
@@ -231,7 +232,7 @@ function TransactionsPreview() {
 
       <div className="preview-footer">
         <span>Showing 1 to 4 of 24 transactions</span>
-        <button type="button">20 per page <ChevronDown size={14} /></button>
+        <button type="button" tabIndex={-1}>20 per page <ChevronDown size={14} /></button>
       </div>
     </article>
   )
