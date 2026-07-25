@@ -6,6 +6,7 @@ import {
   Database,
   Download,
   Globe2,
+  HelpCircle,
   KeyRound,
   LockKeyhole,
   Mail,
@@ -68,7 +69,7 @@ function Settings(props: PageProps) {
           </aside>
 
           <div className="settings-content">
-            {activeSection === 'Account' ? <AccountSettings /> : null}
+            {activeSection === 'Account' ? <AccountSettings onNavigate={props.onNavigate} /> : null}
             {activeSection === 'Business' ? <BusinessSettings /> : null}
             {activeSection === 'Billing' ? <BillingSettings onNavigate={props.onNavigate} /> : null}
             {activeSection === 'Security' ? <SecuritySettings /> : null}
@@ -81,7 +82,7 @@ function Settings(props: PageProps) {
   )
 }
 
-function AccountSettings() {
+function AccountSettings({ onNavigate }: { onNavigate: PageProps['onNavigate'] }) {
   return (
     <SettingsPanel
       eyebrow="Account"
@@ -97,6 +98,9 @@ function AccountSettings() {
       </SettingsRow>
       <SettingsRow icon={KeyRound} title="Password" description="Last changed 3 months ago.">
         <button className="secondary-button" type="button">Change password</button>
+      </SettingsRow>
+      <SettingsRow icon={HelpCircle} title="Help and support" description="Open help topics or start a support request from the message center.">
+        <button className="secondary-button" type="button" onClick={() => onNavigate('Help')}>Open help</button>
       </SettingsRow>
     </SettingsPanel>
   )

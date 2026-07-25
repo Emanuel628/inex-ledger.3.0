@@ -171,7 +171,15 @@ function AppShell({
                   <SettingsIcon size={17} />
                   <span>Settings</span>
                 </button>
-                <button className="user-dropdown-signout" type="button" role="menuitem">
+                <button
+                  className="user-dropdown-signout"
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    onNavigate('Login')
+                    setUserMenuOpen(false)
+                  }}
+                >
                   <LogOut size={17} />
                   <span>Sign out</span>
                 </button>

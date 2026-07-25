@@ -11,6 +11,14 @@ import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
 import Billing from './pages/Billing'
 import Subscription from './pages/Subscription'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
+import VerifyEmail from './pages/VerifyEmail'
+import MfaChallenge from './pages/MfaChallenge'
+import Onboarding from './pages/Onboarding'
+import Help from './pages/Help'
 import PlaceholderPage from './pages/PlaceholderPage'
 
 export type AppPage =
@@ -26,6 +34,14 @@ export type AppPage =
   | 'Settings'
   | 'Billing'
   | 'Subscription'
+  | 'Login'
+  | 'Register'
+  | 'ForgotPassword'
+  | 'ResetPassword'
+  | 'VerifyEmail'
+  | 'MfaChallenge'
+  | 'Onboarding'
+  | 'Help'
 
 export type ThemeMode = 'light' | 'dark'
 
@@ -100,6 +116,38 @@ function App() {
 
   if (currentPage === 'Subscription') {
     return <Subscription {...pageProps} />
+  }
+
+  if (currentPage === 'Login') {
+    return <Login {...pageProps} />
+  }
+
+  if (currentPage === 'Register') {
+    return <Register {...pageProps} />
+  }
+
+  if (currentPage === 'ForgotPassword') {
+    return <ForgotPassword {...pageProps} />
+  }
+
+  if (currentPage === 'ResetPassword') {
+    return <ResetPassword {...pageProps} />
+  }
+
+  if (currentPage === 'VerifyEmail') {
+    return <VerifyEmail {...pageProps} />
+  }
+
+  if (currentPage === 'MfaChallenge') {
+    return <MfaChallenge {...pageProps} />
+  }
+
+  if (currentPage === 'Onboarding') {
+    return <Onboarding {...pageProps} />
+  }
+
+  if (currentPage === 'Help') {
+    return <Help {...pageProps} />
   }
 
   if (currentPage === 'Transactions') {
