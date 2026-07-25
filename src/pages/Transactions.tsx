@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 import {
   AlertTriangle,
   Calendar,
@@ -30,6 +31,7 @@ type TransactionStatus = 'Cleared' | 'Needs review' | 'Missing receipt' | 'Draft
 
 type Transaction = {
   id: number
+  dateIso: string
   date: string
   description: string
   category: string
@@ -53,6 +55,7 @@ type TransactionDraft = {
 const transactions: Transaction[] = [
   {
     id: 1,
+    dateIso: '2024-05-31',
     date: 'May 31',
     description: 'Stripe payout',
     category: 'Income',
@@ -64,6 +67,7 @@ const transactions: Transaction[] = [
   },
   {
     id: 2,
+    dateIso: '2024-05-29',
     date: 'May 29',
     description: 'Adobe Creative Cloud',
     category: 'Software',
@@ -75,6 +79,7 @@ const transactions: Transaction[] = [
   },
   {
     id: 3,
+    dateIso: '2024-05-28',
     date: 'May 28',
     description: 'Shell',
     category: 'Fuel',
@@ -86,6 +91,7 @@ const transactions: Transaction[] = [
   },
   {
     id: 4,
+    dateIso: '2024-05-26',
     date: 'May 26',
     description: 'Client lunch',
     category: 'Meals',
@@ -97,6 +103,7 @@ const transactions: Transaction[] = [
   },
   {
     id: 5,
+    dateIso: '2024-05-24',
     date: 'May 24',
     description: 'Google Workspace',
     category: 'Software',
@@ -108,6 +115,7 @@ const transactions: Transaction[] = [
   },
   {
     id: 6,
+    dateIso: '2024-05-21',
     date: 'May 21',
     description: 'Consulting invoice',
     category: 'Income',
@@ -121,11 +129,59 @@ const transactions: Transaction[] = [
 
 function Transactions(props: PageProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
   const [expandedPanel, setExpandedPanel] = useState<string | null>(null)
   const [transactionRows, setTransactionRows] = useState<Transaction[]>(transactions)
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
   const [actionMenuId, setActionMenuId] = useState<number | null>(null)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [monthFilter, setMonthFilter] = useState('2024-05')
+  const [categoryFilter, setCategoryFilter] = useState('All')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [accountFilter, setAccountFilter] = useState('All')
+  const [pageSize, setPageSize] = useState(20)
+  const [currentPage, setCurrentPage] = useState(1)
+  const csvInputRef = useRef<HTMLInputElement | null>(null)
   const [noticeVisible, dismissNotice] = useSessionDismissed('transactions-review')
+
+  const filteredRows = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase()
+
+    return transactionRows.filter((transaction) => {
+      const matchesMonth = monthFilter === 'All' || transaction.dateIso.startsWith(monthFilter)
+      const matchesCategory = categoryFilter === 'All' || transaction.category === categoryFilter
+      const matchesStatus = statusFilter === 'All'
+        || transaction.status === statusFilter
+        || (statusFilter === 'Needs attention' && (transaction.status !== 'Cleared' || transaction.receipt === 'Missing'))
+      const matchesAccount = accountFilter === 'All' || transaction.account === accountFilter
+      const matchesSearch = !normalizedSearch || [
+        transaction.description,
+        transaction.category,
+        transaction.account,
+        transaction.receipt,
+        transaction.status,
+        String(transaction.amount),
+      ].some((value) => value.toLowerCase().includes(normalizedSearch))
+
+      return matchesMonth && matchesCategory && matchesStatus && matchesAccount && matchesSearch
+    })
+  }, [accountFilter, categoryFilter, monthFilter, searchTerm, statusFilter, transactionRows])
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / pageSize))
+  const safeCurrentPage = Math.min(currentPage, totalPages)
+  const pageStart = (safeCurrentPage - 1) * pageSize
+  const visibleRows = filteredRows.slice(pageStart, pageStart + pageSize)
+  const categories = uniqueValues(transactionRows.map((transaction) => transaction.category))
+  const accounts = uniqueValues(transactionRows.map((transaction) => transaction.account))
+  const incomeTotal = transactionRows.filter((row) => row.amount > 0).reduce((total, row) => total + row.amount, 0)
+  const expenseTotal = Math.abs(transactionRows.filter((row) => row.amount < 0).reduce((total, row) => total + row.amount, 0))
+  const netTotal = incomeTotal - expenseTotal
+  const reviewCount = transactionRows.filter((row) => row.status !== 'Cleared' || row.receipt === 'Missing').length
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [accountFilter, categoryFilter, monthFilter, pageSize, searchTerm, statusFilter])
 
   useEffect(() => {
     document.body.classList.toggle('modal-is-open', drawerOpen || Boolean(selectedTransaction))
@@ -141,12 +197,21 @@ function Transactions(props: PageProps) {
         <>
           {drawerOpen ? (
             <TransactionDrawer
-              onClose={() => setDrawerOpen(false)}
+              onClose={() => {
+                setDrawerOpen(false)
+                setEditingTransaction(null)
+              }}
               onSave={(transaction) => {
-                setTransactionRows((rows) => [transaction, ...rows])
+                setTransactionRows((rows) => (
+                  editingTransaction
+                    ? rows.map((row) => (row.id === transaction.id ? transaction : row))
+                    : [transaction, ...rows]
+                ))
+                setEditingTransaction(null)
                 setDrawerOpen(false)
               }}
               nextId={Math.max(...transactionRows.map((row) => row.id), 0) + 1}
+              transaction={editingTransaction}
             />
           ) : null}
           {selectedTransaction ? (
@@ -173,7 +238,14 @@ function Transactions(props: PageProps) {
               <h1>Transactions</h1>
               <p>Review the money coming in and going out. Everything else stays tucked away until you need it.</p>
             </div>
-            <button className="primary-button" type="button" onClick={() => setDrawerOpen(true)}>
+            <button
+              className="primary-button"
+              type="button"
+              onClick={() => {
+                setEditingTransaction(null)
+                setDrawerOpen(true)
+              }}
+            >
               <Plus size={18} />
               Add transaction
             </button>
@@ -183,10 +255,19 @@ function Transactions(props: PageProps) {
             <section className="top-alert" aria-label="Transactions need attention">
               <AlertTriangle size={17} />
               <div>
-                <strong>3 transactions need attention</strong>
+                <strong>{reviewCount} transactions need attention</strong>
                 <span>Missing receipts and business-use details before export.</span>
               </div>
-              <button type="button">Review</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setFiltersOpen(true)
+                  setMonthFilter('All')
+                  setStatusFilter('Needs attention')
+                }}
+              >
+                Review
+              </button>
               <button className="top-alert-close" type="button" aria-label="Dismiss alert" onClick={dismissNotice}>
                 <X size={16} />
               </button>
@@ -194,34 +275,100 @@ function Transactions(props: PageProps) {
           ) : null}
 
           <section className="summary-strip" aria-label="Transaction summary">
-            <SummaryItem label="Income" value="$42,860" tone="income" icon={TrendingUp} />
-            <SummaryItem label="Expenses" value="$18,430" tone="expense" icon={TrendingDown} />
-            <SummaryItem label="Net" value="$24,430" tone="net" icon={CircleDollarSign} />
-            <SummaryItem label="Needs review" value="3" tone="review" icon={AlertTriangle} />
+            <SummaryItem label="Income" value={formatMoney(incomeTotal)} tone="income" icon={TrendingUp} />
+            <SummaryItem label="Expenses" value={formatMoney(expenseTotal)} tone="expense" icon={TrendingDown} />
+            <SummaryItem label="Net" value={formatMoney(netTotal)} tone="net" icon={CircleDollarSign} />
+            <SummaryItem label="Needs review" value={String(reviewCount)} tone="review" icon={AlertTriangle} />
           </section>
 
           <section className="table-panel">
             <div className="table-toolbar">
               <label className="field search-field">
                 <Search size={18} />
-                <input type="search" placeholder="Search transactions" />
+                <input
+                  type="search"
+                  placeholder="Search transactions"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                />
               </label>
 
               <div className="filter-actions">
-                <button className="secondary-button" type="button">
+                <label className="secondary-button month-filter-button">
                   <Calendar size={17} />
-                  May 2024
-                </button>
-                <button className="secondary-button" type="button">
+                  <select value={monthFilter} onChange={(event) => setMonthFilter(event.target.value)}>
+                    <option value="All">All months</option>
+                    <option value="2024-05">May 2024</option>
+                    <option value="2024-04">April 2024</option>
+                    <option value="2024-03">March 2024</option>
+                  </select>
+                </label>
+                <button className="secondary-button" type="button" aria-expanded={filtersOpen} onClick={() => setFiltersOpen((value) => !value)}>
                   <Filter size={17} />
                   More filters
                 </button>
-                <button className="secondary-button" type="button">
+                <button className="secondary-button" type="button" onClick={() => csvInputRef.current?.click()}>
                   <Upload size={17} />
                   Import CSV
                 </button>
+                <input
+                  ref={csvInputRef}
+                  className="visually-hidden"
+                  type="file"
+                  accept=".csv,text/csv"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0]
+                    if (file) {
+                      void importCsv(file, transactionRows, setTransactionRows)
+                    }
+                    event.target.value = ''
+                  }}
+                />
               </div>
             </div>
+
+            {filtersOpen ? (
+              <div className="transaction-filter-panel">
+                <label>
+                  Category
+                  <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
+                    <option value="All">All categories</option>
+                    {categories.map((category) => <option value={category} key={category}>{category}</option>)}
+                  </select>
+                </label>
+                <label>
+                  Status
+                  <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+                    <option value="All">All statuses</option>
+                    <option value="Needs attention">Needs attention</option>
+                    <option value="Cleared">Cleared</option>
+                    <option value="Needs review">Needs review</option>
+                    <option value="Missing receipt">Missing receipt</option>
+                    <option value="Draft">Draft</option>
+                  </select>
+                </label>
+                <label>
+                  Account
+                  <select value={accountFilter} onChange={(event) => setAccountFilter(event.target.value)}>
+                    <option value="All">All accounts</option>
+                    {accounts.map((account) => <option value={account} key={account}>{account}</option>)}
+                  </select>
+                </label>
+                <button
+                  className="secondary-button"
+                  type="button"
+                  onClick={() => {
+                    setSearchTerm('')
+                    setMonthFilter('All')
+                    setCategoryFilter('All')
+                    setStatusFilter('All')
+                    setAccountFilter('All')
+                  }}
+                >
+                  Clear filters
+                </button>
+              </div>
+            ) : null}
 
             <div className="table-scroll">
               <table>
@@ -238,7 +385,7 @@ function Transactions(props: PageProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactionRows.map((transaction) => (
+                  {visibleRows.map((transaction) => (
                     <tr key={transaction.id}>
                       <td data-label="Date">{transaction.date}</td>
                       <td data-label="Description">
@@ -275,6 +422,16 @@ function Transactions(props: PageProps) {
                         </button>
                         {actionMenuId === transaction.id ? (
                           <div className="row-action-menu">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingTransaction(transaction)
+                                setDrawerOpen(true)
+                                setActionMenuId(null)
+                              }}
+                            >
+                              Edit
+                            </button>
                             <button
                               type="button"
                               onClick={() => {
@@ -321,29 +478,46 @@ function Transactions(props: PageProps) {
                       </td>
                     </tr>
                   ))}
+                  {visibleRows.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="empty-table-cell">No transactions match these filters.</td>
+                    </tr>
+                  ) : null}
                 </tbody>
               </table>
             </div>
 
             <div className="table-footer">
-              <span>Showing 1 to {transactionRows.length} of {transactionRows.length} transactions</span>
+              <span>
+                Showing {filteredRows.length ? pageStart + 1 : 0} to {Math.min(pageStart + pageSize, filteredRows.length)} of {filteredRows.length} transactions
+              </span>
               <div className="pagination" aria-label="Pagination">
-                <button type="button" aria-label="Previous page">
+                <button type="button" aria-label="Previous page" disabled={safeCurrentPage === 1} onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}>
                   <ChevronLeft size={16} />
                 </button>
-                <button className="is-active" type="button">1</button>
-                <button type="button">2</button>
-                <button type="button">3</button>
-                <span>...</span>
-                <button type="button">17</button>
-                <button type="button" aria-label="Next page">
+                {Array.from({ length: totalPages }, (_, index) => index + 1).slice(0, 5).map((page) => (
+                  <button
+                    className={page === safeCurrentPage ? 'is-active' : ''}
+                    type="button"
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+                {totalPages > 5 ? <span>...</span> : null}
+                <button type="button" aria-label="Next page" disabled={safeCurrentPage === totalPages} onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}>
                   <ChevronRight size={16} />
                 </button>
               </div>
-              <button className="secondary-button per-page-button" type="button">
-                20 per page
+              <label className="secondary-button per-page-button">
+                <select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))}>
+                  <option value={10}>10 per page</option>
+                  <option value={20}>20 per page</option>
+                  <option value={50}>50 per page</option>
+                </select>
                 <ChevronDown size={16} />
-              </button>
+              </label>
             </div>
           </section>
 
@@ -451,14 +625,17 @@ function TransactionDrawer({
   onClose,
   onSave,
   nextId,
+  transaction,
 }: {
   onClose: () => void
   onSave: (transaction: Transaction) => void
   nextId: number
+  transaction: Transaction | null
 }) {
-  const [draft, setDraft] = useState<TransactionDraft>(emptyDraft)
+  const [draft, setDraft] = useState<TransactionDraft>(() => transaction ? transactionToDraft(transaction) : emptyDraft)
   const [error, setError] = useState('')
   const isIncome = draft.kind === 'Income'
+  const isEditing = Boolean(transaction)
 
   function updateDraft<K extends keyof TransactionDraft>(key: K, value: TransactionDraft[K]) {
     setDraft((current) => ({ ...current, [key]: value }))
@@ -473,24 +650,25 @@ function TransactionDrawer({
     }
 
     onSave({
-      id: nextId,
+      id: transaction?.id ?? nextId,
+      dateIso: draft.date || new Date().toISOString().slice(0, 10),
       date: draft.date ? formatShortDate(draft.date) : 'Today',
       description: draft.description.trim(),
       category: draft.category || draft.kind,
       account: draft.account || 'Checking',
-      receipt: 'Missing',
-      status: draft.kind === 'Income' ? 'Cleared' : 'Needs review',
+      receipt: transaction?.receipt ?? 'Missing',
+      status: transaction?.status ?? (draft.kind === 'Income' ? 'Cleared' : 'Needs review'),
       amount: isIncome ? numericAmount : -numericAmount,
-      merchantTone: isIncome ? 'green' : 'blue',
+      merchantTone: isIncome ? 'green' : 'red',
     })
   }
 
   return (
     <div className="drawer-backdrop" role="presentation" onMouseDown={onClose}>
-      <aside className="transaction-drawer" aria-label="Add transaction" onMouseDown={(event) => event.stopPropagation()}>
+      <aside className="transaction-drawer" aria-label={isEditing ? 'Edit transaction' : 'Add transaction'} onMouseDown={(event) => event.stopPropagation()}>
         <div className="drawer-header">
           <div>
-            <h2>Add transaction</h2>
+            <h2>{isEditing ? 'Edit transaction' : 'Add transaction'}</h2>
             <p>Only the essentials first. Advanced details stay collapsed.</p>
           </div>
           <button className="icon-button" type="button" aria-label="Close drawer" onClick={onClose}>
@@ -498,7 +676,7 @@ function TransactionDrawer({
           </button>
         </div>
 
-        <div className="transaction-type-toggle" role="group" aria-label="Transaction type">
+        <div className={`transaction-type-toggle ${isIncome ? 'is-income' : 'is-expense'}`} role="group" aria-label="Transaction type">
           <button className={isIncome ? 'is-selected' : ''} type="button" onClick={() => updateDraft('kind', 'Income')}>Income</button>
           <button className={!isIncome ? 'is-selected' : ''} type="button" onClick={() => updateDraft('kind', 'Expense')}>Expense</button>
         </div>
@@ -567,7 +745,7 @@ function TransactionDrawer({
             Cancel
           </button>
           <button className="primary-button" type="button" onClick={saveTransaction}>
-            Save transaction
+            {isEditing ? 'Save changes' : 'Save transaction'}
           </button>
         </div>
       </aside>
@@ -646,6 +824,104 @@ function getMerchantInitial(description: string) {
 function formatShortDate(date: string) {
   const parsed = new Date(`${date}T00:00:00`)
   return parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+function transactionToDraft(transaction: Transaction): TransactionDraft {
+  return {
+    kind: transaction.amount >= 0 ? 'Income' : 'Expense',
+    amount: String(Math.abs(transaction.amount)),
+    description: transaction.description,
+    date: transaction.dateIso,
+    category: transaction.category,
+    account: transaction.account,
+    note: '',
+  }
+}
+
+function uniqueValues(values: string[]) {
+  return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b))
+}
+
+async function importCsv(
+  file: File,
+  currentRows: Transaction[],
+  setTransactionRows: Dispatch<SetStateAction<Transaction[]>>,
+) {
+  const csvText = await file.text()
+  const lines = csvText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
+  if (lines.length < 2) {
+    return
+  }
+
+  const headers = splitCsvLine(lines[0]).map((header) => normalizeHeader(header))
+  const startingId = Math.max(...currentRows.map((row) => row.id), 0) + 1
+  const importedRows = lines.slice(1).map((line, index) => {
+    const cells = splitCsvLine(line)
+    const valueFor = (...names: string[]) => {
+      const headerIndex = headers.findIndex((header) => names.includes(header))
+      return headerIndex >= 0 ? cells[headerIndex]?.trim() ?? '' : ''
+    }
+    const rawDate = valueFor('date', 'transactiondate', 'posteddate') || new Date().toISOString().slice(0, 10)
+    const dateIso = normalizeDate(rawDate)
+    const rawAmount = valueFor('amount', 'total', 'transactionamount') || '0'
+    const amount = Number(rawAmount.replace(/[$,]/g, '')) || 0
+    const description = valueFor('description', 'merchant', 'payee', 'name') || `Imported transaction ${index + 1}`
+    const category = valueFor('category', 'taxcategory') || (amount >= 0 ? 'Income' : 'Uncategorized')
+    const account = valueFor('account', 'bankaccount') || 'Imported'
+
+    return {
+      id: startingId + index,
+      dateIso,
+      date: formatShortDate(dateIso),
+      description,
+      category,
+      account,
+      receipt: 'Missing',
+      status: amount >= 0 ? 'Cleared' : 'Needs review',
+      amount,
+      merchantTone: amount >= 0 ? 'green' : 'red',
+    } satisfies Transaction
+  })
+
+  setTransactionRows((rows) => [...importedRows, ...rows])
+}
+
+function splitCsvLine(line: string) {
+  const cells: string[] = []
+  let current = ''
+  let quoted = false
+
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index]
+    const nextChar = line[index + 1]
+    if (char === '"' && nextChar === '"') {
+      current += '"'
+      index += 1
+    } else if (char === '"') {
+      quoted = !quoted
+    } else if (char === ',' && !quoted) {
+      cells.push(current)
+      current = ''
+    } else {
+      current += char
+    }
+  }
+
+  cells.push(current)
+  return cells
+}
+
+function normalizeHeader(header: string) {
+  return header.toLowerCase().replace(/[^a-z0-9]/g, '')
+}
+
+function normalizeDate(value: string) {
+  const parsed = new Date(value)
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toISOString().slice(0, 10)
+  }
+
+  return new Date().toISOString().slice(0, 10)
 }
 
 export default Transactions

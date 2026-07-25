@@ -120,6 +120,7 @@
   tbody tr:hover,
   .table-toolbar input,
   .table-toolbar select,
+  .transaction-filter-panel select,
   .per-page-button,
   .top-alert button,
   .user-dropdown button:hover,

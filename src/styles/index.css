@@ -50,6 +50,16 @@ button {
   cursor: pointer;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
@@ -921,6 +931,60 @@ textarea:focus-visible {
   justify-content: flex-end;
 }
 
+.month-filter-button,
+.per-page-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.month-filter-button select,
+.per-page-button select {
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  outline: 0;
+  appearance: none;
+}
+
+.transaction-filter-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 0 18px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.transaction-filter-panel label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.transaction-filter-panel select {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .table-scroll {
   overflow-x: auto;
 }
@@ -1200,6 +1264,11 @@ tbody tr:last-child td {
   background: #ffffff;
 }
 
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
 .pagination .is-active {
   border-color: var(--blue);
   background: var(--blue);
@@ -1313,6 +1382,18 @@ tbody tr:last-child td {
   border-color: rgba(7, 140, 88, 0.42);
   background: #edf9f2;
   color: var(--green);
+}
+
+.transaction-type-toggle.is-expense .is-selected {
+  border-color: rgba(216, 59, 59, 0.34);
+  background: rgba(216, 59, 59, 0.12);
+  color: var(--red);
+}
+
+.empty-table-cell {
+  padding: 24px 18px;
+  color: var(--muted);
+  text-align: center;
 }
 
 .account-add-options {
