@@ -353,6 +353,320 @@ textarea:focus-visible {
   z-index: 45;
 }
 
+.public-shell {
+  min-height: 100vh;
+  display: grid;
+  gap: 42px;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 86% 4%, rgba(23, 92, 255, 0.14), transparent 32%),
+    radial-gradient(circle at 12% 12%, rgba(9, 156, 150, 0.13), transparent 28%),
+    var(--bg);
+  color: var(--ink);
+}
+
+.public-header,
+.public-footer {
+  width: min(1160px, 100%);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.public-header {
+  min-height: 56px;
+}
+
+.public-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.public-brand span {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #29d4ff, #175cff);
+  color: #ffffff;
+}
+
+.public-nav,
+.public-footer nav,
+.public-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.public-nav button,
+.public-footer button {
+  min-height: 40px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.public-nav .primary-button {
+  color: #ffffff;
+}
+
+.public-hero,
+.public-section,
+.public-page-heading,
+.pricing-grid,
+.upgrade-panel,
+.legal-link-grid,
+.legal-article {
+  width: min(1160px, 100%);
+  margin: 0 auto;
+}
+
+.public-hero {
+  min-height: calc(100vh - 190px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.72fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.public-hero-copy h1,
+.public-page-heading h1,
+.legal-article h1 {
+  margin: 0;
+  max-width: 780px;
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.public-hero-copy p:not(.eyebrow),
+.public-page-heading p:not(.eyebrow),
+.public-section-head p,
+.legal-article > p,
+.legal-article section p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.landing-preview,
+.public-feature-card,
+.pricing-card,
+.support-card,
+.support-note-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.landing-preview {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+}
+
+.landing-preview-head,
+.landing-preview-stats,
+.support-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.landing-preview-head span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(7, 140, 88, 0.12);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.landing-preview-stats {
+  align-items: stretch;
+}
+
+.landing-preview-stats div {
+  flex: 1;
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+
+.landing-preview-stats span,
+.landing-preview-list span,
+.pricing-card span,
+.public-footer span,
+.legal-effective {
+  color: var(--muted);
+}
+
+.landing-preview-stats strong {
+  font-size: 24px;
+}
+
+.landing-preview-list {
+  display: grid;
+  gap: 10px;
+}
+
+.landing-preview-list span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 800;
+}
+
+.public-section {
+  display: grid;
+  gap: 18px;
+}
+
+.public-section-head h2,
+.public-feature-card h2,
+.public-feature-card h3,
+.pricing-card h2,
+.support-card h2,
+.legal-article h2 {
+  margin: 0;
+}
+
+.public-feature-grid,
+.pricing-grid,
+.legal-link-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.legal-link-grid,
+.pricing-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.public-feature-card,
+.pricing-card {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+
+.public-feature-card > span,
+.support-card-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(23, 92, 255, 0.12);
+  color: var(--blue);
+}
+
+.pricing-card strong {
+  font-size: 42px;
+  line-height: 1;
+}
+
+.pricing-card.is-highlighted {
+  border-color: rgba(23, 92, 255, 0.32);
+  box-shadow: 0 24px 60px rgba(23, 92, 255, 0.12);
+}
+
+.pricing-card ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.pricing-card li {
+  display: flex;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.upgrade-panel {
+  display: grid;
+  place-items: center;
+}
+
+.upgrade-panel .pricing-card {
+  width: min(520px, 100%);
+}
+
+.legal-article {
+  display: grid;
+  gap: 20px;
+  padding-bottom: 34px;
+}
+
+.legal-article section {
+  display: grid;
+  gap: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.public-footer {
+  padding: 24px 0 8px;
+  border-top: 1px solid var(--line);
+}
+
+.public-footer div {
+  display: grid;
+  gap: 4px;
+}
+
+.support-page {
+  width: min(980px, 100%);
+}
+
+.support-card-list {
+  display: grid;
+  gap: 12px;
+}
+
+.support-card {
+  padding: 16px;
+}
+
+.support-card > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.support-card p,
+.support-note-card p {
+  margin: 5px 0 0;
+  color: var(--muted);
+}
+
+.support-note-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
 .business-button {
   padding: 0 13px;
   border: 1px solid var(--line);
@@ -2928,6 +3242,17 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 1100px) {
+  .public-hero {
+    min-height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .public-feature-grid,
+  .pricing-grid,
+  .legal-link-grid {
+    grid-template-columns: 1fr;
+  }
+
   .ledger-shell,
   .ledger-shell.sidebar-is-collapsed {
     grid-template-columns: 1fr;
@@ -3104,6 +3429,35 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 720px) {
+  .public-shell {
+    padding: 14px;
+  }
+
+  .public-header,
+  .public-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .public-nav,
+  .public-nav button,
+  .public-nav .primary-button,
+  .public-hero-actions,
+  .public-hero-actions .primary-button,
+  .public-hero-actions .secondary-button {
+    width: 100%;
+  }
+
+  .landing-preview-stats {
+    flex-direction: column;
+  }
+
+  .public-hero-copy h1,
+  .public-page-heading h1,
+  .legal-article h1 {
+    font-size: 38px;
+  }
+
   .app-topbar {
     padding: 0 14px;
   }

@@ -12,7 +12,7 @@ function AuthShell({ theme, onNavigate, children }: AuthShellProps) {
   return (
     <main className="auth-shell" data-theme={theme}>
       <section className="auth-brand-panel">
-        <button className="auth-brand" type="button" onClick={() => onNavigate('Login')}>
+        <button className="auth-brand" type="button" onClick={() => onNavigate('Landing')}>
           <span>
             <BarChart3 size={22} />
           </span>

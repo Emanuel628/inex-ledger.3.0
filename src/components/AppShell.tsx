@@ -200,7 +200,7 @@ function AppShell({
                   type="button"
                   role="menuitem"
                   onClick={() => {
-                    goToPage('Login')
+                    goToPage('Landing')
                   }}
                 >
                   <LogOut size={17} />

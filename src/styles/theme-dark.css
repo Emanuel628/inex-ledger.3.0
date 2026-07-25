@@ -1,4 +1,5 @@
-.ledger-shell[data-theme="dark"] {
+.ledger-shell[data-theme="dark"],
+.public-shell[data-theme="dark"] {
   --bg: #07111f;
   --surface: #0f1b2d;
   --surface-soft: #142338;
@@ -17,11 +18,29 @@
 }
 
 .ledger-shell[data-theme="dark"],
-.ledger-shell[data-theme="dark"] .app-workspace {
+.ledger-shell[data-theme="dark"] .app-workspace,
+.public-shell[data-theme="dark"] {
   background:
     radial-gradient(circle at 80% 0%, rgba(23, 92, 255, 0.12), transparent 34%),
     var(--bg);
   color: var(--ink);
+}
+
+.public-shell[data-theme="dark"] :is(
+  .landing-preview,
+  .public-feature-card,
+  .pricing-card,
+  .support-card,
+  .support-note-card,
+  .secondary-button
+) {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.public-shell[data-theme="dark"] :is(.landing-preview-stats div) {
+  background: var(--surface-soft);
 }
 
 .ledger-shell[data-theme="dark"] :is(

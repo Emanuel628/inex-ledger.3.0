@@ -11,6 +11,15 @@ import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
 import Billing from './pages/Billing'
 import Subscription from './pages/Subscription'
+import Landing from './pages/Landing'
+import Pricing from './pages/Pricing'
+import Legal from './pages/Legal'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
+import Sessions from './pages/Sessions'
+import ChangeEmail from './pages/ChangeEmail'
+import Upgrade from './pages/Upgrade'
+import TrialSetup from './pages/TrialSetup'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
@@ -34,6 +43,15 @@ export type AppPage =
   | 'Settings'
   | 'Billing'
   | 'Subscription'
+  | 'Landing'
+  | 'Pricing'
+  | 'Legal'
+  | 'Privacy'
+  | 'Terms'
+  | 'Sessions'
+  | 'ChangeEmail'
+  | 'Upgrade'
+  | 'TrialSetup'
   | 'Login'
   | 'Register'
   | 'ForgotPassword'
@@ -55,7 +73,7 @@ export type PageProps = {
 }
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<AppPage>('Transactions')
+  const [currentPage, setCurrentPage] = useState<AppPage>('Landing')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [theme, setTheme] = useState<ThemeMode>(() => (
     window.localStorage.getItem('inex-theme') === 'dark' ? 'dark' : 'light'
@@ -116,6 +134,42 @@ function App() {
 
   if (currentPage === 'Subscription') {
     return <Subscription {...pageProps} />
+  }
+
+  if (currentPage === 'Landing') {
+    return <Landing {...pageProps} />
+  }
+
+  if (currentPage === 'Pricing') {
+    return <Pricing {...pageProps} />
+  }
+
+  if (currentPage === 'Legal') {
+    return <Legal {...pageProps} />
+  }
+
+  if (currentPage === 'Privacy') {
+    return <Privacy {...pageProps} />
+  }
+
+  if (currentPage === 'Terms') {
+    return <Terms {...pageProps} />
+  }
+
+  if (currentPage === 'Sessions') {
+    return <Sessions {...pageProps} />
+  }
+
+  if (currentPage === 'ChangeEmail') {
+    return <ChangeEmail {...pageProps} />
+  }
+
+  if (currentPage === 'Upgrade') {
+    return <Upgrade {...pageProps} />
+  }
+
+  if (currentPage === 'TrialSetup') {
+    return <TrialSetup {...pageProps} />
   }
 
   if (currentPage === 'Login') {

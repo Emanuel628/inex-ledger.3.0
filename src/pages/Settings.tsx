@@ -72,7 +72,7 @@ function Settings(props: PageProps) {
             {activeSection === 'Account' ? <AccountSettings onNavigate={props.onNavigate} /> : null}
             {activeSection === 'Business' ? <BusinessSettings /> : null}
             {activeSection === 'Billing' ? <BillingSettings onNavigate={props.onNavigate} /> : null}
-            {activeSection === 'Security' ? <SecuritySettings /> : null}
+            {activeSection === 'Security' ? <SecuritySettings onNavigate={props.onNavigate} /> : null}
             {activeSection === 'Preferences' ? <PreferenceSettings theme={props.theme} setTheme={props.setTheme} /> : null}
             {activeSection === 'Data' ? <DataSettings /> : null}
           </div>
@@ -94,7 +94,7 @@ function AccountSettings({ onNavigate }: { onNavigate: PageProps['onNavigate'] }
         <Field label="Account email" value="emanuel@example.com" type="email" />
       </div>
       <SettingsRow icon={Mail} title="Change email" description="Require confirmation before the new address becomes active.">
-        <button className="secondary-button" type="button">Update email</button>
+        <button className="secondary-button" type="button" onClick={() => onNavigate('ChangeEmail')}>Update email</button>
       </SettingsRow>
       <SettingsRow icon={KeyRound} title="Password" description="Last changed 3 months ago.">
         <button className="secondary-button" type="button">Change password</button>
@@ -157,7 +157,7 @@ function BillingSettings({ onNavigate }: { onNavigate: PageProps['onNavigate'] }
   )
 }
 
-function SecuritySettings() {
+function SecuritySettings({ onNavigate }: { onNavigate: PageProps['onNavigate'] }) {
   return (
     <SettingsPanel
       eyebrow="Security"
@@ -168,7 +168,7 @@ function SecuritySettings() {
         <Toggle enabled label="On" />
       </SettingsRow>
       <SettingsRow icon={MonitorSmartphone} title="Active sessions" description="Review signed-in devices and revoke sessions you do not recognize.">
-        <button className="secondary-button" type="button">Review sessions</button>
+        <button className="secondary-button" type="button" onClick={() => onNavigate('Sessions')}>Review sessions</button>
       </SettingsRow>
       <SettingsRow icon={KeyRound} title="Trusted devices" description="Clear remembered devices after travel, staff changes, or shared-device use.">
         <button className="secondary-button" type="button">Clear devices</button>
