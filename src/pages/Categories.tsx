@@ -277,7 +277,7 @@ function CategoryDrawer({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <form className="drawer-form">
+        <form className="drawer-form" onSubmit={(event) => event.preventDefault()}>
           <label>
             Category name
             <input placeholder="Software" />

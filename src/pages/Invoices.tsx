@@ -227,7 +227,7 @@ function InvoiceDrawer({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <form className="drawer-form">
+        <form className="drawer-form" onSubmit={(event) => event.preventDefault()}>
           <label>
             Invoice title
             <input placeholder="May consulting retainer" />

@@ -156,7 +156,7 @@ function Exports(props: PageProps) {
             </div>
           </section>
 
-          <form className="export-card export-form-panel">
+          <form className="export-card export-form-panel" onSubmit={(event) => event.preventDefault()}>
             <div className="export-card-header">
               <div>
                 <p className="eyebrow">Filters</p>

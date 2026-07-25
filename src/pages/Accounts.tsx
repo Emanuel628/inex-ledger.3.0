@@ -316,7 +316,7 @@ function AccountDrawer({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <form className="drawer-form">
+        <form className="drawer-form" onSubmit={(event) => event.preventDefault()}>
           <label>
             Account name
             <input placeholder="Business Checking" />

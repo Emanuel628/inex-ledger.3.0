@@ -373,7 +373,7 @@ function ComposeModal({ mode, onClose }: { mode: 'general' | 'support'; onClose:
           </button>
         </div>
 
-        <form className="compose-form">
+        <form className="compose-form" onSubmit={(event) => event.preventDefault()}>
           <label>
             To
             <input

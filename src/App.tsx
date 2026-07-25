@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import Transactions from './pages/Transactions'
 import Accounts from './pages/Accounts'
 import Categories from './pages/Categories'
@@ -41,7 +41,13 @@ export type PageProps = {
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('Transactions')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [theme, setTheme] = useState<ThemeMode>('light')
+  const [theme, setTheme] = useState<ThemeMode>(() => (
+    window.localStorage.getItem('inex-theme') === 'dark' ? 'dark' : 'light'
+  ))
+
+  useEffect(() => {
+    window.localStorage.setItem('inex-theme', theme)
+  }, [theme])
 
   const pageProps = {
     activePage: currentPage,

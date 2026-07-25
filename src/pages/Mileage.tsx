@@ -286,7 +286,7 @@ function Mileage(props: PageProps) {
 function QuickEntryForm({ entryMode }: { entryMode: MileageKind }) {
   if (entryMode === 'Trip') {
     return (
-      <form className="mileage-inline-form">
+      <form className="mileage-inline-form" onSubmit={(event) => event.preventDefault()}>
         <label>
           Date
           <input type="date" />
@@ -309,7 +309,7 @@ function QuickEntryForm({ entryMode }: { entryMode: MileageKind }) {
   }
 
   return (
-    <form className="mileage-inline-form">
+    <form className="mileage-inline-form" onSubmit={(event) => event.preventDefault()}>
       <label>
         Date
         <input type="date" />
@@ -366,7 +366,7 @@ function MileageDrawer({
           ))}
         </div>
 
-        <form className="drawer-form">
+        <form className="drawer-form" onSubmit={(event) => event.preventDefault()}>
           {entryMode === 'Trip' ? (
             <>
               <label>

@@ -287,7 +287,7 @@ function ReceiptUploadDrawer({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <form className="drawer-form">
+        <form className="drawer-form" onSubmit={(event) => event.preventDefault()}>
           <label className="receipt-dropzone">
             <UploadCloud size={26} />
             <strong>Drag and drop receipt</strong>

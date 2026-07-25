@@ -363,7 +363,7 @@ function TransactionDrawer({ onClose }: { onClose: () => void }) {
           <button type="button">Expense</button>
         </div>
 
-        <form className="drawer-form">
+        <form className="drawer-form" onSubmit={(event) => event.preventDefault()}>
           <label>
             Amount
             <input placeholder="$0.00" />
