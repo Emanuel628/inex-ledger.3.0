@@ -565,10 +565,16 @@ textarea:focus-visible {
 }
 
 .danger-button {
-  min-width: 104px;
-  padding-inline: 12px;
+  min-width: 0;
+  min-height: 36px;
+  gap: 6px;
+  padding-inline: 10px;
+  border-color: rgba(216, 59, 59, 0.26);
   color: var(--red);
+  font-size: 13px;
+  font-weight: 850;
   white-space: nowrap;
+  box-shadow: none;
 }
 
 .transactions-page {
@@ -2714,6 +2720,11 @@ tbody tr:last-child td {
     width: min(460px, 48vw);
   }
 
+  .transactions-page {
+    width: min(920px, 100%);
+    padding-inline: 22px;
+  }
+
   .summary-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2778,6 +2789,49 @@ tbody tr:last-child td {
 
   .settings-section-nav button {
     min-height: 52px;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 900px) {
+  .app-topbar {
+    padding-inline: 18px;
+  }
+
+  .business-button span {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .page-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .page-heading > :last-child {
+    align-self: flex-start;
+  }
+
+  .settings-form-grid,
+  .export-field-grid,
+  .pdf-review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-row,
+  .settings-danger-zone {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .settings-row-action,
+  .settings-danger-zone .danger-button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .message-lanes-are-collapsed .message-lanes {
+    grid-template-columns: repeat(3, minmax(44px, 1fr));
   }
 }
 
@@ -2875,12 +2929,17 @@ tbody tr:last-child td {
   .settings-row-action,
   .settings-row-action .primary-button,
   .settings-row-action .secondary-button,
-  .settings-danger-zone .secondary-button {
+  .settings-danger-zone .secondary-button:not(.danger-button) {
     width: 100%;
   }
 
   .settings-row-action {
     justify-content: stretch;
+  }
+
+  .settings-danger-zone .danger-button {
+    width: auto;
+    justify-self: start;
   }
 
   .summary-strip {
@@ -3269,17 +3328,44 @@ tbody tr:last-child td {
 }
 
 .ledger-shell[data-theme="dark"] .summary-icon.review,
-.ledger-shell[data-theme="dark"] .status-review,
-.ledger-shell[data-theme="dark"] .top-alert,
-.ledger-shell[data-theme="dark"] .pdf-warning {
+.ledger-shell[data-theme="dark"] .status-review {
   border-color: rgba(244, 182, 75, 0.28);
   background: rgba(244, 182, 75, 0.1);
   color: var(--ink);
 }
 
+.ledger-shell[data-theme="dark"] :is(.top-alert, .pdf-warning, .pdf-warning-box) {
+  border-color: rgba(244, 182, 75, 0.44);
+  background:
+    linear-gradient(135deg, rgba(244, 182, 75, 0.16), rgba(15, 27, 45, 0.96)),
+    var(--surface);
+  color: var(--ink);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.26);
+}
+
+.ledger-shell[data-theme="dark"] :is(.top-alert, .pdf-warning-box) svg {
+  color: #ffd166;
+}
+
+.ledger-shell[data-theme="dark"] :is(.top-alert strong, .top-alert span, .pdf-warning-box strong, .pdf-warning-box span) {
+  color: var(--ink);
+}
+
+.ledger-shell[data-theme="dark"] :is(.top-alert button, .pdf-warning-box button) {
+  border-color: rgba(244, 182, 75, 0.36);
+  background: rgba(244, 182, 75, 0.12);
+  color: #ffe1a3;
+}
+
 .ledger-shell[data-theme="dark"] .settings-danger-zone {
   border-color: rgba(255, 123, 123, 0.3);
   background: rgba(255, 123, 123, 0.1);
+}
+
+.ledger-shell[data-theme="dark"] .danger-button {
+  border-color: rgba(255, 123, 123, 0.34);
+  background: rgba(255, 123, 123, 0.1);
+  color: #ffb0b0;
 }
 
 .ledger-shell[data-theme="dark"] :is(.drawer-backdrop, .export-modal-backdrop, .message-modal-backdrop, .mobile-nav-backdrop) {
