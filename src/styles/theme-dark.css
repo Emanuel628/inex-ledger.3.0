@@ -26,13 +26,6 @@
 
 .public-shell[data-theme="dark"] :is(
   .public-header,
-  .landing-transaction-preview,
-  .preview-summary-strip,
-  .preview-table,
-  .preview-toolbar label,
-  .preview-toolbar button,
-  .preview-alert button,
-  .preview-footer button,
   .public-feature-card,
   .pricing-card,
   .support-card,
@@ -48,19 +41,6 @@
   border-color: var(--line);
   background: var(--surface);
   color: var(--ink);
-}
-
-.public-shell[data-theme="dark"] :is(.preview-table-head, .preview-summary-item > span) {
-  background: var(--surface-soft);
-}
-
-.public-shell[data-theme="dark"] :is(.preview-table-row) {
-  color: var(--muted);
-}
-
-.public-shell[data-theme="dark"] .preview-alert {
-  border-color: rgba(244, 182, 75, 0.34);
-  background: rgba(244, 182, 75, 0.1);
 }
 
 .public-shell[data-theme="dark"] .landing-section-tinted {
