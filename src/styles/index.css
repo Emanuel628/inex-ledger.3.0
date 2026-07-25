@@ -577,6 +577,13 @@ textarea:focus-visible {
   box-shadow: none;
 }
 
+.compact-button {
+  min-height: 34px;
+  padding-inline: 10px;
+  font-size: 13px;
+  box-shadow: none;
+}
+
 .transactions-page {
   width: min(1200px, 100%);
   display: grid;
@@ -644,6 +651,223 @@ textarea:focus-visible {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   overflow: hidden;
+}
+
+.billing-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.billing-focus-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 16px;
+}
+
+.billing-hero-card,
+.billing-side-card,
+.billing-action-card,
+.subscription-plan-panel,
+.subscription-simple-card,
+.subscription-danger-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.billing-hero-card {
+  min-height: 188px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+}
+
+.billing-hero-card h2,
+.subscription-plan-panel h2 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.billing-hero-card p:not(.eyebrow),
+.billing-side-card p,
+.billing-action-card p,
+.subscription-plan-panel p,
+.subscription-simple-card p,
+.subscription-business-row p,
+.subscription-danger-panel p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.billing-card-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef4ff;
+  color: var(--blue);
+}
+
+.billing-side-card {
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  padding: 22px;
+}
+
+.billing-side-card strong,
+.billing-action-card strong,
+.subscription-simple-card strong,
+.subscription-danger-panel strong {
+  font-size: 16px;
+}
+
+.billing-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.billing-action-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 13px;
+  padding: 18px;
+}
+
+.billing-action-card .secondary-button {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.subscription-plan-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 22px;
+  align-items: center;
+  padding: 26px;
+}
+
+.subscription-plan-copy {
+  max-width: 560px;
+}
+
+.subscription-renew-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+
+.subscription-interval-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.subscription-interval-toggle button {
+  min-height: 76px;
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 850;
+  text-align: left;
+}
+
+.subscription-interval-toggle button.is-selected {
+  border-color: rgba(23, 92, 255, 0.42);
+  background: #eef4ff;
+  color: var(--blue);
+}
+
+.subscription-interval-toggle strong {
+  font-size: 20px;
+}
+
+.subscription-price-line {
+  display: grid;
+  gap: 3px;
+}
+
+.subscription-price-line strong {
+  font-size: 24px;
+}
+
+.subscription-price-line span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.subscription-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.subscription-simple-card {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.subscription-simple-card span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.subscription-simple-card strong {
+  font-size: 24px;
+}
+
+.subscription-business-list {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.subscription-business-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+
+.subscription-danger-panel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-color: rgba(216, 59, 59, 0.22);
+  background: rgba(216, 59, 59, 0.05);
+}
+
+.danger-icon {
+  background: rgba(216, 59, 59, 0.1);
+  color: var(--red);
 }
 
 .summary-item {
@@ -2770,8 +2994,15 @@ tbody tr:last-child td {
   }
 
   .analytics-primary-grid,
-  .analytics-secondary-grid {
+  .analytics-secondary-grid,
+  .billing-focus-grid,
+  .subscription-plan-panel {
     grid-template-columns: 1fr;
+  }
+
+  .billing-action-grid,
+  .subscription-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .message-list-toolbar {
@@ -2815,8 +3046,28 @@ tbody tr:last-child td {
 
   .settings-form-grid,
   .export-field-grid,
-  .pdf-review-grid {
+  .pdf-review-grid,
+  .billing-action-grid,
+  .subscription-detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .billing-hero-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .billing-hero-card .secondary-button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .subscription-business-row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .subscription-business-row .compact-button {
+    grid-column: 2;
+    justify-self: start;
   }
 
   .settings-row,
@@ -2944,6 +3195,48 @@ tbody tr:last-child td {
 
   .summary-strip {
     grid-template-columns: 1fr;
+  }
+
+  .billing-heading-actions,
+  .billing-heading-actions .primary-button,
+  .billing-heading-actions .secondary-button,
+  .billing-hero-card .secondary-button,
+  .billing-action-card .secondary-button,
+  .subscription-renew-card .primary-button {
+    width: 100%;
+  }
+
+  .billing-focus-grid,
+  .billing-action-grid,
+  .subscription-plan-panel,
+  .subscription-detail-grid,
+  .subscription-business-row,
+  .subscription-danger-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .billing-hero-card {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .billing-hero-card .secondary-button,
+  .billing-action-card .secondary-button,
+  .subscription-business-row .compact-button {
+    grid-column: auto;
+  }
+
+  .subscription-plan-panel {
+    padding: 18px;
+  }
+
+  .subscription-interval-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .subscription-business-row .status-pill,
+  .subscription-danger-panel .danger-button {
+    justify-self: start;
   }
 
   .summary-item,
@@ -3210,6 +3503,12 @@ tbody tr:last-child td {
   .progressive-panel,
   .settings-section-nav,
   .settings-panel,
+  .billing-hero-card,
+  .billing-side-card,
+  .billing-action-card,
+  .subscription-plan-panel,
+  .subscription-simple-card,
+  .subscription-danger-panel,
   .secondary-button,
   .transaction-drawer,
   .drawer-actions,
@@ -3245,6 +3544,9 @@ tbody tr:last-child td {
   .settings-field select,
   .settings-row,
   .settings-status-card,
+  .billing-card-icon,
+  .subscription-renew-card,
+  .subscription-business-row,
   .drawer-form input,
   .drawer-form select,
   .drawer-form textarea,
@@ -3276,6 +3578,15 @@ tbody tr:last-child td {
   .settings-row p,
   .settings-status-card p,
   .settings-danger-zone p,
+  .billing-hero-card p:not(.eyebrow),
+  .billing-side-card p,
+  .billing-action-card p,
+  .subscription-plan-panel p,
+  .subscription-price-line span,
+  .subscription-simple-card p,
+  .subscription-simple-card span,
+  .subscription-business-row p,
+  .subscription-danger-panel p,
   .drawer-header p,
   .export-modal-header p:not(.eyebrow),
   .message-modal-header p:not(.eyebrow),
@@ -3301,7 +3612,11 @@ tbody tr:last-child td {
   color: var(--ink);
 }
 
-.ledger-shell[data-theme="dark"] :is(.settings-section-nav button:hover, .settings-section-nav button.is-selected) {
+.ledger-shell[data-theme="dark"] :is(
+  .settings-section-nav button:hover,
+  .settings-section-nav button.is-selected,
+  .subscription-interval-toggle button.is-selected
+) {
   background: rgba(109, 162, 255, 0.14);
   color: var(--blue);
 }
@@ -3366,6 +3681,11 @@ tbody tr:last-child td {
   border-color: rgba(255, 123, 123, 0.34);
   background: rgba(255, 123, 123, 0.1);
   color: #ffb0b0;
+}
+
+.ledger-shell[data-theme="dark"] .danger-icon {
+  background: rgba(255, 123, 123, 0.14);
+  color: var(--red);
 }
 
 .ledger-shell[data-theme="dark"] :is(.drawer-backdrop, .export-modal-backdrop, .message-modal-backdrop, .mobile-nav-backdrop) {

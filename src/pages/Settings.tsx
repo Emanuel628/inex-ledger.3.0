@@ -70,7 +70,7 @@ function Settings(props: PageProps) {
           <div className="settings-content">
             {activeSection === 'Account' ? <AccountSettings /> : null}
             {activeSection === 'Business' ? <BusinessSettings /> : null}
-            {activeSection === 'Billing' ? <BillingSettings /> : null}
+            {activeSection === 'Billing' ? <BillingSettings onNavigate={props.onNavigate} /> : null}
             {activeSection === 'Security' ? <SecuritySettings /> : null}
             {activeSection === 'Preferences' ? <PreferenceSettings theme={props.theme} setTheme={props.setTheme} /> : null}
             {activeSection === 'Data' ? <DataSettings /> : null}
@@ -129,7 +129,7 @@ function BusinessSettings() {
   )
 }
 
-function BillingSettings() {
+function BillingSettings({ onNavigate }: { onNavigate: PageProps['onNavigate'] }) {
   return (
     <SettingsPanel
       eyebrow="Billing"
@@ -144,10 +144,10 @@ function BillingSettings() {
         </div>
       </div>
       <SettingsRow icon={CreditCard} title="Stripe billing portal" description="Payment methods, invoices, cancellation, and reactivation belong in the billing portal.">
-        <button className="primary-button" type="button">Open billing</button>
+        <button className="primary-button" type="button" onClick={() => onNavigate('Billing')}>Open billing</button>
       </SettingsRow>
       <SettingsRow icon={Download} title="Billing history" description="Download receipts and invoice records for your subscription.">
-        <button className="secondary-button" type="button">View invoices</button>
+        <button className="secondary-button" type="button" onClick={() => onNavigate('Subscription')}>Manage plan</button>
       </SettingsRow>
     </SettingsPanel>
   )

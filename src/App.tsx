@@ -9,6 +9,8 @@ import Invoices from './pages/Invoices'
 import Messages from './pages/Messages'
 import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
+import Billing from './pages/Billing'
+import Subscription from './pages/Subscription'
 import PlaceholderPage from './pages/PlaceholderPage'
 
 export type AppPage =
@@ -22,6 +24,8 @@ export type AppPage =
   | 'Analytics'
   | 'Messages'
   | 'Settings'
+  | 'Billing'
+  | 'Subscription'
 
 export type ThemeMode = 'light' | 'dark'
 
@@ -82,6 +86,14 @@ function App() {
 
   if (currentPage === 'Settings') {
     return <Settings {...pageProps} />
+  }
+
+  if (currentPage === 'Billing') {
+    return <Billing {...pageProps} />
+  }
+
+  if (currentPage === 'Subscription') {
+    return <Subscription {...pageProps} />
   }
 
   if (currentPage === 'Transactions') {
