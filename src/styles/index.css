@@ -952,39 +952,6 @@ textarea:focus-visible {
   appearance: none;
 }
 
-.transaction-filter-panel {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(150px, 1fr)) auto;
-  gap: 12px;
-  align-items: end;
-  padding: 0 18px 16px;
-  border-bottom: 1px solid var(--line);
-}
-
-.transaction-filter-panel label {
-  display: grid;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.transaction-filter-panel select {
-  width: 100%;
-  min-height: 42px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: #ffffff;
-  color: var(--ink);
-  font-size: 14px;
-  font-weight: 750;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
 .table-scroll {
   overflow-x: auto;
 }
@@ -1635,6 +1602,10 @@ tbody tr:last-child td {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.transaction-filter-form {
+  padding: 18px;
 }
 
 .export-heading-actions {

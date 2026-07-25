@@ -184,10 +184,10 @@ function Transactions(props: PageProps) {
   }, [accountFilter, categoryFilter, monthFilter, pageSize, searchTerm, statusFilter])
 
   useEffect(() => {
-    document.body.classList.toggle('modal-is-open', drawerOpen || Boolean(selectedTransaction))
+    document.body.classList.toggle('modal-is-open', drawerOpen || Boolean(selectedTransaction) || filtersOpen)
 
     return () => document.body.classList.remove('modal-is-open')
-  }, [drawerOpen, selectedTransaction])
+  }, [drawerOpen, filtersOpen, selectedTransaction])
 
   return (
     <AppShell
@@ -226,6 +226,26 @@ function Transactions(props: PageProps) {
                 setTransactionRows((rows) => rows.filter((row) => row.id !== selectedTransaction.id))
                 setSelectedTransaction(null)
               }}
+            />
+          ) : null}
+          {filtersOpen ? (
+            <TransactionFiltersModal
+              categories={categories}
+              accounts={accounts}
+              categoryFilter={categoryFilter}
+              statusFilter={statusFilter}
+              accountFilter={accountFilter}
+              onCategoryChange={setCategoryFilter}
+              onStatusChange={setStatusFilter}
+              onAccountChange={setAccountFilter}
+              onClear={() => {
+                setSearchTerm('')
+                setMonthFilter('All')
+                setCategoryFilter('All')
+                setStatusFilter('All')
+                setAccountFilter('All')
+              }}
+              onClose={() => setFiltersOpen(false)}
             />
           ) : null}
         </>
@@ -303,7 +323,7 @@ function Transactions(props: PageProps) {
                     <option value="2024-03">March 2024</option>
                   </select>
                 </label>
-                <button className="secondary-button" type="button" aria-expanded={filtersOpen} onClick={() => setFiltersOpen((value) => !value)}>
+                <button className="secondary-button" type="button" aria-expanded={filtersOpen} onClick={() => setFiltersOpen(true)}>
                   <Filter size={17} />
                   More filters
                 </button>
@@ -326,49 +346,6 @@ function Transactions(props: PageProps) {
                 />
               </div>
             </div>
-
-            {filtersOpen ? (
-              <div className="transaction-filter-panel">
-                <label>
-                  Category
-                  <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
-                    <option value="All">All categories</option>
-                    {categories.map((category) => <option value={category} key={category}>{category}</option>)}
-                  </select>
-                </label>
-                <label>
-                  Status
-                  <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-                    <option value="All">All statuses</option>
-                    <option value="Needs attention">Needs attention</option>
-                    <option value="Cleared">Cleared</option>
-                    <option value="Needs review">Needs review</option>
-                    <option value="Missing receipt">Missing receipt</option>
-                    <option value="Draft">Draft</option>
-                  </select>
-                </label>
-                <label>
-                  Account
-                  <select value={accountFilter} onChange={(event) => setAccountFilter(event.target.value)}>
-                    <option value="All">All accounts</option>
-                    {accounts.map((account) => <option value={account} key={account}>{account}</option>)}
-                  </select>
-                </label>
-                <button
-                  className="secondary-button"
-                  type="button"
-                  onClick={() => {
-                    setSearchTerm('')
-                    setMonthFilter('All')
-                    setCategoryFilter('All')
-                    setStatusFilter('All')
-                    setAccountFilter('All')
-                  }}
-                >
-                  Clear filters
-                </button>
-              </div>
-            ) : null}
 
             <div className="table-scroll">
               <table>
@@ -802,6 +779,89 @@ function TransactionDetailsModal({
             </button>
             <button className="secondary-button danger-button" type="button" onClick={onDelete}>Delete</button>
           </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function TransactionFiltersModal({
+  categories,
+  accounts,
+  categoryFilter,
+  statusFilter,
+  accountFilter,
+  onCategoryChange,
+  onStatusChange,
+  onAccountChange,
+  onClear,
+  onClose,
+}: {
+  categories: string[]
+  accounts: string[]
+  categoryFilter: string
+  statusFilter: string
+  accountFilter: string
+  onCategoryChange: (value: string) => void
+  onStatusChange: (value: string) => void
+  onAccountChange: (value: string) => void
+  onClear: () => void
+  onClose: () => void
+}) {
+  return (
+    <div className="transaction-modal-backdrop" role="presentation" onMouseDown={onClose}>
+      <section
+        className="transaction-detail-modal transaction-filters-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="transactionFiltersTitle"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <div className="drawer-header">
+          <div>
+            <h2 id="transactionFiltersTitle">More filters</h2>
+            <p>Filter this transaction list without adding noise to the page.</p>
+          </div>
+          <button className="icon-button" type="button" aria-label="Close filters" onClick={onClose}>
+            <X size={18} />
+          </button>
+        </div>
+
+        <form className="drawer-form transaction-filter-form" onSubmit={(event) => event.preventDefault()}>
+          <label>
+            Category
+            <select value={categoryFilter} onChange={(event) => onCategoryChange(event.target.value)}>
+              <option value="All">All categories</option>
+              {categories.map((category) => <option value={category} key={category}>{category}</option>)}
+            </select>
+          </label>
+          <label>
+            Status
+            <select value={statusFilter} onChange={(event) => onStatusChange(event.target.value)}>
+              <option value="All">All statuses</option>
+              <option value="Needs attention">Needs attention</option>
+              <option value="Cleared">Cleared</option>
+              <option value="Needs review">Needs review</option>
+              <option value="Missing receipt">Missing receipt</option>
+              <option value="Draft">Draft</option>
+            </select>
+          </label>
+          <label>
+            Account
+            <select value={accountFilter} onChange={(event) => onAccountChange(event.target.value)}>
+              <option value="All">All accounts</option>
+              {accounts.map((account) => <option value={account} key={account}>{account}</option>)}
+            </select>
+          </label>
+        </form>
+
+        <div className="drawer-actions">
+          <button className="secondary-button" type="button" onClick={onClear}>
+            Clear filters
+          </button>
+          <button className="primary-button" type="button" onClick={onClose}>
+            Apply filters
+          </button>
         </div>
       </section>
     </div>
