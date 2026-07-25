@@ -19,8 +19,6 @@ function PublicShell({ theme, onNavigate, children }: PublicShellProps) {
           InEx Ledger
         </button>
         <nav className="public-nav" aria-label="Public navigation">
-          <button type="button" onClick={() => onNavigate('Pricing')}>Pricing</button>
-          <button type="button" onClick={() => onNavigate('Legal')}>Legal</button>
           <button type="button" onClick={() => onNavigate('Login')}>Sign in</button>
           <button className="primary-button" type="button" onClick={() => onNavigate('Register')}>Start free</button>
         </nav>
@@ -34,6 +32,8 @@ function PublicShell({ theme, onNavigate, children }: PublicShellProps) {
           <span>Clean books without the accounting headache.</span>
         </div>
         <nav aria-label="Legal links">
+          <button type="button" onClick={() => onNavigate('Pricing')}>Pricing</button>
+          <button type="button" onClick={() => onNavigate('Legal')}>Legal</button>
           <button type="button" onClick={() => onNavigate('Privacy')}>Privacy</button>
           <button type="button" onClick={() => onNavigate('Terms')}>Terms</button>
           <button type="button" onClick={() => onNavigate('Help')}>Help</button>

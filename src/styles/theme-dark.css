@@ -32,6 +32,12 @@
   .pricing-card,
   .support-card,
   .support-note-card,
+  .landing-trust-strip span,
+  .landing-step,
+  .handoff-card,
+  .region-card,
+  .faq-item,
+  .final-cta,
   .secondary-button
 ) {
   border-color: var(--line);
@@ -41,6 +47,10 @@
 
 .public-shell[data-theme="dark"] :is(.landing-preview-stats div) {
   background: var(--surface-soft);
+}
+
+.public-shell[data-theme="dark"] .landing-section-tinted {
+  background: rgba(109, 162, 255, 0.07);
 }
 
 .ledger-shell[data-theme="dark"] :is(
