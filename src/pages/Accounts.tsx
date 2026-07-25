@@ -9,7 +9,6 @@ import {
   Plus,
   Search,
   ToggleLeft,
-  Upload,
   Wallet,
   X,
   type LucideIcon,
@@ -150,10 +149,6 @@ function Accounts(props: PageProps) {
                 <button className="secondary-button" type="button">
                   <Wallet size={17} />
                   Status: Active
-                </button>
-                <button className="secondary-button" type="button">
-                  <Upload size={17} />
-                  Import CSV
                 </button>
               </div>
             </div>
