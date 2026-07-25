@@ -3,9 +3,6 @@ import { BarChart3 } from 'lucide-react'
 import type { AppPage, ThemeMode } from '../App'
 
 type AuthShellProps = {
-  eyebrow: string
-  title: string
-  description: string
   theme: ThemeMode
   onNavigate: (page: AppPage) => void
   children: ReactNode

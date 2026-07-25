@@ -6,9 +6,6 @@ function MfaChallenge(props: PageProps) {
     <AuthShell
       theme={props.theme}
       onNavigate={props.onNavigate}
-      eyebrow="Security check"
-      title="One extra step for account protection."
-      description="MFA should feel lightweight while still making the protection state clear."
     >
       <h2>Enter security code</h2>
       <p>Use the code sent to your email for this sign-in attempt.</p>

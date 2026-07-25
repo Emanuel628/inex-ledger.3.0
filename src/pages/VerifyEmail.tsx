@@ -6,9 +6,6 @@ function VerifyEmail(props: PageProps) {
     <AuthShell
       theme={props.theme}
       onNavigate={props.onNavigate}
-      eyebrow="Verify email"
-      title="Confirm ownership before setup begins."
-      description="Email verification should be short and obvious, especially before onboarding."
     >
       <h2>Check your email</h2>
       <p>Enter the code sent to your inbox to continue creating your workspace.</p>

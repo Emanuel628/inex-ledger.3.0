@@ -6,9 +6,6 @@ function ResetPassword(props: PageProps) {
     <AuthShell
       theme={props.theme}
       onNavigate={props.onNavigate}
-      eyebrow="New password"
-      title="Create a new password and continue."
-      description="Keep the reset flow direct, with clear password fields and no extra distractions."
     >
       <h2>Reset password</h2>
       <p>Enter the reset code from your email and choose a new password.</p>

@@ -6,9 +6,6 @@ function Onboarding(props: PageProps) {
     <AuthShell
       theme={props.theme}
       onNavigate={props.onNavigate}
-      eyebrow="Workspace setup"
-      title="Create the first business workspace."
-      description="Onboarding should gather business basics only, then move users into the dashboard."
     >
       <h2>Business basics</h2>
       <p>These settings can be changed later in Settings.</p>

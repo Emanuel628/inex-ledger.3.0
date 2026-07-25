@@ -7,9 +7,6 @@ function ForgotPassword(props: PageProps) {
     <AuthShell
       theme={props.theme}
       onNavigate={props.onNavigate}
-      eyebrow="Account recovery"
-      title="Reset access without making the page heavy."
-      description="The recovery page should be simple, reassuring, and fast on mobile."
     >
       <h2>Forgot password</h2>
       <p>Enter your email and we will send a reset link if the account exists.</p>

@@ -6,9 +6,6 @@ function Register(props: PageProps) {
     <AuthShell
       theme={props.theme}
       onNavigate={props.onNavigate}
-      eyebrow="Create account"
-      title="Start clean with the essentials first."
-      description="Registration should collect only what is needed to create the account. Business setup comes next."
     >
       <h2>Create account</h2>
       <p>Set up your personal login before creating the first business workspace.</p>

@@ -10,9 +10,6 @@ function Login(props: PageProps) {
     <AuthShell
       theme={props.theme}
       onNavigate={props.onNavigate}
-      eyebrow="Welcome back"
-      title="Sign in and get straight to the books."
-      description="A focused login flow for business owners who need the app to load quickly and clearly."
     >
       <h2>Sign in</h2>
       <p>Use the email and password attached to your InEx Ledger account.</p>
