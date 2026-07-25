@@ -1,7 +1,11 @@
 .auth-shell {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: minmax(320px, 0.9fr) minmax(360px, 1fr);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 28px;
   background:
     radial-gradient(circle at 12% 18%, rgba(9, 156, 150, 0.18), transparent 30%),
     radial-gradient(circle at 88% 8%, rgba(23, 92, 255, 0.14), transparent 34%),
@@ -10,15 +14,9 @@
 }
 
 .auth-brand-panel {
-  min-height: 100%;
-  display: grid;
-  align-content: space-between;
-  gap: 44px;
-  padding: 42px;
-  background:
-    linear-gradient(180deg, rgba(7, 29, 58, 0.92), rgba(10, 33, 63, 0.96)),
-    var(--nav);
-  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  color: var(--ink);
 }
 
 .auth-brand {
@@ -28,7 +26,7 @@
   gap: 10px;
   border: 0;
   background: transparent;
-  color: #ffffff;
+  color: var(--ink);
   font-size: 18px;
   font-weight: 900;
 }
@@ -42,25 +40,8 @@
   background: linear-gradient(135deg, #29d4ff, #175cff);
 }
 
-.auth-brand-panel h1 {
-  max-width: 520px;
-  margin: 0;
-  font-size: 44px;
-  line-height: 1.04;
-}
-
-.auth-brand-panel p:not(.eyebrow) {
-  max-width: 520px;
-  margin: 14px 0 0;
-  color: rgba(255, 255, 255, 0.74);
-  font-size: 16px;
-  line-height: 1.6;
-}
-
 .auth-card {
   width: min(520px, calc(100% - 44px));
-  align-self: center;
-  justify-self: center;
   display: grid;
   gap: 18px;
   padding: 28px;
@@ -246,16 +227,7 @@
 
 @media (max-width: 900px) {
   .auth-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .auth-brand-panel {
-    min-height: auto;
-    padding: 28px 22px;
-  }
-
-  .auth-brand-panel h1 {
-    font-size: 34px;
+    padding: 22px 14px;
   }
 
   .auth-card {

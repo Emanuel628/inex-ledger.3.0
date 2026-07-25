@@ -11,7 +11,7 @@ type AuthShellProps = {
   children: ReactNode
 }
 
-function AuthShell({ eyebrow, title, description, theme, onNavigate, children }: AuthShellProps) {
+function AuthShell({ theme, onNavigate, children }: AuthShellProps) {
   return (
     <main className="auth-shell" data-theme={theme}>
       <section className="auth-brand-panel">
@@ -21,11 +21,6 @@ function AuthShell({ eyebrow, title, description, theme, onNavigate, children }:
           </span>
           InEx Ledger
         </button>
-        <div>
-          <p className="eyebrow">{eyebrow}</p>
-          <h1>{title}</h1>
-          <p>{description}</p>
-        </div>
       </section>
 
       <section className="auth-card">

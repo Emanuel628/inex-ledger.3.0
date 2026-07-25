@@ -20,7 +20,7 @@ function MfaChallenge(props: PageProps) {
         </div>
         <label className="auth-check">
           <input type="checkbox" />
-          Trust this device for 30 days
+          Trust this device
         </label>
         <button className="primary-button" type="button" onClick={() => props.onNavigate('Transactions')}>Continue</button>
         <button className="secondary-button" type="button" onClick={() => props.onNavigate('Login')}>Back to sign in</button>
