@@ -20,13 +20,12 @@
 .ledger-shell[data-theme="dark"],
 .ledger-shell[data-theme="dark"] .app-workspace,
 .public-shell[data-theme="dark"] {
-  background:
-    radial-gradient(circle at 80% 0%, rgba(23, 92, 255, 0.12), transparent 34%),
-    var(--bg);
+  background: var(--bg);
   color: var(--ink);
 }
 
 .public-shell[data-theme="dark"] :is(
+  .public-header,
   .landing-preview,
   .public-feature-card,
   .pricing-card,
