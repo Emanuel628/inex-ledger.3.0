@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-const dataDir = path.resolve(process.cwd(), 'server', 'data')
+const dataDir = path.resolve(process.env.INEX_DATA_DIR || path.join(process.cwd(), 'server', 'data'))
 const dataFile = path.join(dataDir, 'auth-store.json')
 
 const emptyStore = {

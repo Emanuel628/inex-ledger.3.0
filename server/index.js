@@ -411,10 +411,15 @@ app.get(/.*/, (_req, res) => {
   res.sendFile(path.join(distDir, 'index.html'))
 })
 
+let server = null
+let keepAliveTimer = null
+
 if (process.argv[1] === __filename) {
-  app.listen(port, () => {
+  server = app.listen(port, () => {
     console.log(`InEx Ledger API listening on http://localhost:${port}`)
   })
+  keepAliveTimer = setInterval(() => {}, 2 ** 31 - 1)
 }
 
 export default app
+export { keepAliveTimer, server }

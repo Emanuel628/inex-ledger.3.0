@@ -4,12 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1",
     "dev:api": "node server/index.js",
-    "dev:full": "concurrently \"npm run dev:api\" \"npm run dev\"",
+    "dev:full": "concurrently -k \"npm run dev:api\" \"npm run dev\"",
     "start": "node server/index.js",
     "build": "tsc -b && vite build",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:e2e": "playwright test",
+    "test:smoke": "playwright test tests/e2e/auth-smoke.spec.ts",
+    "test:all": "npm run lint && npm run build && npm run test:e2e"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
@@ -24,6 +27,7 @@
   },
   "devDependencies": {
     "@eslint/js": "latest",
+    "@playwright/test": "^1.62.0",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
