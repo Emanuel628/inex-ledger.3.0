@@ -135,6 +135,17 @@
   text-align: left;
 }
 
+.auth-error {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(216, 59, 59, 0.24);
+  border-radius: var(--radius);
+  background: rgba(216, 59, 59, 0.08);
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 850;
+}
+
 .auth-card-footer {
   display: flex;
   flex-wrap: wrap;

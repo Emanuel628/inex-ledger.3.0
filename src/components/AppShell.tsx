@@ -50,6 +50,8 @@ type AppShellProps = PageProps & {
 function AppShell({
   activePage,
   onNavigate,
+  authUser,
+  onLogout,
   sidebarCollapsed,
   setSidebarCollapsed,
   theme,
@@ -146,7 +148,7 @@ function AppShell({
 
           <button className="business-button" type="button">
             <Building2 size={18} />
-            <span>Sample Studio LLC</span>
+            <span>{authUser?.business?.name || 'No business yet'}</span>
             <ChevronDown size={16} />
           </button>
 
@@ -179,8 +181,8 @@ function AppShell({
                 setNotificationsOpen(false)
               }}
             >
-              <div className="user-avatar">E</div>
-              <span>Alex</span>
+              <div className="user-avatar">{authUser?.firstName?.charAt(0).toUpperCase() || 'U'}</div>
+              <span>{authUser?.firstName || 'User'}</span>
               <ChevronDown size={16} />
             </button>
             {userMenuOpen ? (
@@ -199,8 +201,8 @@ function AppShell({
                   className="user-dropdown-signout"
                   type="button"
                   role="menuitem"
-                  onClick={() => {
-                    goToPage('Landing')
+                  onClick={async () => {
+                    await onLogout()
                   }}
                 >
                   <LogOut size={17} />

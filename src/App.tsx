@@ -29,6 +29,7 @@ import MfaChallenge from './pages/MfaChallenge'
 import Onboarding from './pages/Onboarding'
 import Help from './pages/Help'
 import PlaceholderPage from './pages/PlaceholderPage'
+import { getCurrentUser, logoutUser, type AuthUser } from './lib/authApi'
 
 export type AppPage =
   | 'Transactions'
@@ -66,14 +67,32 @@ export type ThemeMode = 'light' | 'dark'
 export type PageProps = {
   activePage: AppPage
   onNavigate: (page: AppPage) => void
+  authUser: AuthUser | null
+  authLoading: boolean
+  onAuthChange: (user: AuthUser | null) => void
+  onLogout: () => Promise<void>
   sidebarCollapsed: boolean
   setSidebarCollapsed: Dispatch<SetStateAction<boolean>>
   theme: ThemeMode
   setTheme: Dispatch<SetStateAction<ThemeMode>>
 }
 
+const publicPages = new Set<AppPage>([
+  'Landing',
+  'Pricing',
+  'Legal',
+  'Privacy',
+  'Terms',
+  'Login',
+  'Register',
+  'ForgotPassword',
+  'ResetPassword',
+])
+
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('Landing')
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [theme, setTheme] = useState<ThemeMode>(() => (
     window.localStorage.getItem('inex-theme') === 'dark' ? 'dark' : 'light'
@@ -83,9 +102,66 @@ function App() {
     window.localStorage.setItem('inex-theme', theme)
   }, [theme])
 
+  useEffect(() => {
+    let active = true
+    getCurrentUser()
+      .then(({ user }) => {
+        if (!active) {
+          return
+        }
+        setAuthUser(user)
+        if (user) {
+          setCurrentPage(user.currentBusinessId ? 'Transactions' : user.emailVerified ? 'Onboarding' : 'VerifyEmail')
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setAuthUser(null)
+          setCurrentPage('Landing')
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setAuthLoading(false)
+        }
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const navigate = (page: AppPage) => {
+    if (!authUser && !publicPages.has(page)) {
+      setCurrentPage('Login')
+      return
+    }
+
+    setCurrentPage(page)
+  }
+
+  const handleAuthChange = (user: AuthUser | null) => {
+    setAuthUser(user)
+    if (!user) {
+      setCurrentPage('Landing')
+      return
+    }
+
+    setCurrentPage(user.currentBusinessId ? 'Transactions' : user.emailVerified ? 'Onboarding' : 'VerifyEmail')
+  }
+
+  const handleLogout = async () => {
+    await logoutUser()
+    handleAuthChange(null)
+  }
+
   const pageProps = {
     activePage: currentPage,
-    onNavigate: setCurrentPage,
+    onNavigate: navigate,
+    authUser,
+    authLoading,
+    onAuthChange: handleAuthChange,
+    onLogout: handleLogout,
     sidebarCollapsed,
     setSidebarCollapsed,
     theme,
