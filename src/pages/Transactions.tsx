@@ -207,6 +207,9 @@ function Transactions(props: PageProps) {
                     ? rows.map((row) => (row.id === transaction.id ? transaction : row))
                     : [transaction, ...rows]
                 ))
+                if (!editingTransaction && monthFilter !== 'All' && !transaction.dateIso.startsWith(monthFilter)) {
+                  setMonthFilter('All')
+                }
                 setEditingTransaction(null)
                 setDrawerOpen(false)
               }}
@@ -340,6 +343,7 @@ function Transactions(props: PageProps) {
                     const file = event.target.files?.[0]
                     if (file) {
                       void importCsv(file, transactionRows, setTransactionRows)
+                      setMonthFilter('All')
                     }
                     event.target.value = ''
                   }}
