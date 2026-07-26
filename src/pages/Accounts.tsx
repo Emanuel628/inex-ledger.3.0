@@ -283,7 +283,7 @@ function ProgressivePanel({
 function AccountDrawer({ onClose }: { onClose: () => void }) {
   return (
     <div className="drawer-backdrop" role="presentation" onMouseDown={onClose}>
-      <aside className="transaction-drawer account-drawer" aria-label="Add account" onMouseDown={(event) => event.stopPropagation()}>
+      <aside className="transaction-drawer account-drawer" role="dialog" aria-modal="true" aria-label="Add account" onMouseDown={(event) => event.stopPropagation()}>
         <div className="drawer-header">
           <div>
             <h2>Add account</h2>

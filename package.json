@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "test:e2e": "playwright test",
     "test:smoke": "playwright test tests/e2e/auth-smoke.spec.ts",
+    "test:debug": "playwright test tests/e2e/app-debug-sweep.spec.ts",
     "test:all": "npm run lint && npm run build && npm run test:e2e"
   },
   "dependencies": {

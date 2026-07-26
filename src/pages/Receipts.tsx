@@ -276,7 +276,7 @@ function ProgressivePanel({
 function ReceiptUploadDrawer({ onClose }: { onClose: () => void }) {
   return (
     <div className="drawer-backdrop" role="presentation" onMouseDown={onClose}>
-      <aside className="transaction-drawer" aria-label="Upload receipt" onMouseDown={(event) => event.stopPropagation()}>
+      <aside className="transaction-drawer" role="dialog" aria-modal="true" aria-label="Upload receipt" onMouseDown={(event) => event.stopPropagation()}>
         <div className="drawer-header">
           <div>
             <h2>Upload receipt</h2>

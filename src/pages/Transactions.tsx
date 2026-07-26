@@ -642,7 +642,7 @@ function TransactionDrawer({
 
   return (
     <div className="drawer-backdrop" role="presentation" onMouseDown={onClose}>
-      <aside className="transaction-drawer" aria-label={isEditing ? 'Edit transaction' : 'Add transaction'} onMouseDown={(event) => event.stopPropagation()}>
+      <aside className="transaction-drawer" role="dialog" aria-modal="true" aria-label={isEditing ? 'Edit transaction' : 'Add transaction'} onMouseDown={(event) => event.stopPropagation()}>
         <div className="drawer-header">
           <div>
             <h2>{isEditing ? 'Edit transaction' : 'Add transaction'}</h2>

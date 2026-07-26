@@ -216,7 +216,7 @@ function Invoices(props: PageProps) {
 function InvoiceDrawer({ onClose }: { onClose: () => void }) {
   return (
     <div className="drawer-backdrop" role="presentation" onMouseDown={onClose}>
-      <aside className="transaction-drawer invoice-drawer" aria-label="New invoice" onMouseDown={(event) => event.stopPropagation()}>
+      <aside className="transaction-drawer invoice-drawer" role="dialog" aria-modal="true" aria-label="New invoice" onMouseDown={(event) => event.stopPropagation()}>
         <div className="drawer-header">
           <div>
             <h2>New invoice</h2>

@@ -342,7 +342,7 @@ function MileageDrawer({
 }) {
   return (
     <div className="drawer-backdrop" role="presentation" onMouseDown={onClose}>
-      <aside className="transaction-drawer" aria-label="Add mileage activity" onMouseDown={(event) => event.stopPropagation()}>
+      <aside className="transaction-drawer" role="dialog" aria-modal="true" aria-label="Add activity" onMouseDown={(event) => event.stopPropagation()}>
         <div className="drawer-header">
           <div>
             <h2>Add activity</h2>
