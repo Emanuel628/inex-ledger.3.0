@@ -112,14 +112,20 @@ export async function revokeOtherSessions() {
 }
 
 async function authRequest<T>(url: string, init: RequestInit = {}) {
-  const response = await fetch(url, {
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...init.headers,
-    },
-    ...init,
-  })
+  let response: Response
+  try {
+    response = await fetch(url, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...init.headers,
+      },
+      ...init,
+    })
+  } catch {
+    throw new Error('Unable to reach the auth server. Start the app with npm run dev and try again.')
+  }
+
   const data = await response.json() as T & { error?: string }
 
   if (!response.ok) {
