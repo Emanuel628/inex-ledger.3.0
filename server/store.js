@@ -8,6 +8,8 @@ const emptyStore = {
   users: [],
   sessions: [],
   businesses: [],
+  passwordResetTokens: [],
+  emailChangeTokens: [],
 }
 
 export async function readStore() {

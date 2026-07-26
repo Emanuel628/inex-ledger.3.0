@@ -146,6 +146,17 @@
   font-weight: 850;
 }
 
+.auth-success {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(7, 140, 88, 0.24);
+  border-radius: var(--radius);
+  background: rgba(7, 140, 88, 0.08);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 850;
+}
+
 .auth-card-footer {
   display: flex;
   flex-wrap: wrap;

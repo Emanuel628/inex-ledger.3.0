@@ -6,7 +6,10 @@ import { fileURLToPath } from 'node:url'
 import {
   clearSessionCookie,
   createSession,
+  createOneTimeCode,
   getSessionContext,
+  getCurrentTokenHash,
+  hashValue,
   hashPassword,
   normalizeEmail,
   publicUser,
@@ -16,11 +19,12 @@ import {
   validatePassword,
   verifyPassword,
 } from './auth.js'
-import { updateStore } from './store.js'
+import { readStore, updateStore } from './store.js'
 
 const app = express()
 const port = Number(process.env.PORT || 3001)
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 const distDir = path.resolve(__dirname, '..', 'dist')
 
 app.use(express.json({ limit: '1mb' }))
@@ -138,6 +142,151 @@ app.post('/api/auth/logout', async (req, res) => {
   res.json({ ok: true })
 })
 
+app.post('/api/auth/forgot-password', async (req, res) => {
+  const email = normalizeEmail(req.body?.email)
+  const code = createOneTimeCode()
+  const codeHash = hashValue(code)
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 20).toISOString()
+  let codeForDev = null
+
+  await updateStore((store) => {
+    const user = store.users.find((item) => item.email === email)
+    if (!user) {
+      return
+    }
+
+    store.passwordResetTokens = store.passwordResetTokens.filter((token) => token.userId !== user.id)
+    store.passwordResetTokens.push({
+      id: crypto.randomUUID(),
+      userId: user.id,
+      codeHash,
+      expiresAt,
+      createdAt: new Date().toISOString(),
+    })
+    codeForDev = code
+  })
+
+  res.json({
+    ok: true,
+    message: 'If the account exists, a reset code was created.',
+    resetCode: process.env.NODE_ENV === 'production' ? undefined : codeForDev,
+  })
+})
+
+app.post('/api/auth/reset-password', async (req, res) => {
+  const email = normalizeEmail(req.body?.email)
+  const code = String(req.body?.code || '').trim()
+  const password = String(req.body?.password || '')
+  const passwordError = validatePassword(password)
+
+  if (passwordError) {
+    res.status(400).json({ error: passwordError })
+    return
+  }
+
+  const passwordHash = await hashPassword(password)
+  const result = await updateStore((store) => {
+    const user = store.users.find((item) => item.email === email)
+    const resetToken = user
+      ? store.passwordResetTokens.find((token) => token.userId === user.id && token.codeHash === hashValue(code))
+      : null
+
+    if (!user || !resetToken || new Date(resetToken.expiresAt).getTime() <= Date.now()) {
+      return { error: 'Invalid or expired reset code.' }
+    }
+
+    user.passwordHash = passwordHash
+    user.updatedAt = new Date().toISOString()
+    store.passwordResetTokens = store.passwordResetTokens.filter((token) => token.id !== resetToken.id)
+    store.sessions = store.sessions.filter((session) => session.userId !== user.id)
+    return { ok: true }
+  })
+
+  if (result.error) {
+    res.status(400).json({ error: result.error })
+    return
+  }
+
+  res.json({ ok: true })
+})
+
+app.post('/api/auth/change-email/request', requireAuth, async (req, res) => {
+  const newEmail = normalizeEmail(req.body?.newEmail)
+  const password = String(req.body?.password || '')
+  const code = createOneTimeCode()
+  const codeHash = hashValue(code)
+  let codeForDev = null
+
+  if (!newEmail || !newEmail.includes('@')) {
+    res.status(400).json({ error: 'Enter a valid new email.' })
+    return
+  }
+
+  const result = await updateStore(async (store) => {
+    if (store.users.some((user) => user.email === newEmail)) {
+      return { error: 'That email is already in use.' }
+    }
+
+    const user = store.users.find((item) => item.id === req.auth.user.id)
+    if (!user || !(await verifyPassword(password, user.passwordHash))) {
+      return { error: 'Password confirmation failed.' }
+    }
+
+    store.emailChangeTokens = store.emailChangeTokens.filter((token) => token.userId !== user.id)
+    store.emailChangeTokens.push({
+      id: crypto.randomUUID(),
+      userId: user.id,
+      newEmail,
+      codeHash,
+      expiresAt: new Date(Date.now() + 1000 * 60 * 20).toISOString(),
+      createdAt: new Date().toISOString(),
+    })
+    codeForDev = code
+    return { ok: true }
+  })
+
+  if (result.error) {
+    res.status(400).json({ error: result.error })
+    return
+  }
+
+  res.json({
+    ok: true,
+    message: 'Verification code created.',
+    verificationCode: process.env.NODE_ENV === 'production' ? undefined : codeForDev,
+  })
+})
+
+app.post('/api/auth/change-email/confirm', requireAuth, async (req, res) => {
+  const code = String(req.body?.code || '').trim()
+  const result = await updateStore((store) => {
+    const user = store.users.find((item) => item.id === req.auth.user.id)
+    const changeToken = user
+      ? store.emailChangeTokens.find((token) => token.userId === user.id && token.codeHash === hashValue(code))
+      : null
+
+    if (!user || !changeToken || new Date(changeToken.expiresAt).getTime() <= Date.now()) {
+      return { error: 'Invalid or expired verification code.' }
+    }
+
+    user.email = changeToken.newEmail
+    user.emailVerified = true
+    user.updatedAt = new Date().toISOString()
+    store.emailChangeTokens = store.emailChangeTokens.filter((token) => token.id !== changeToken.id)
+    const business = user.currentBusinessId
+      ? store.businesses.find((item) => item.id === user.currentBusinessId) || null
+      : null
+    return { user, business }
+  })
+
+  if (result.error) {
+    res.status(400).json({ error: result.error })
+    return
+  }
+
+  res.json({ user: publicUser(result.user, result.business) })
+})
+
 app.post('/api/auth/verify-email', requireAuth, async (req, res) => {
   const result = await updateStore((store) => {
     const user = store.users.find((item) => item.id === req.auth.user.id)
@@ -204,18 +353,57 @@ app.post('/api/businesses', requireAuth, async (req, res) => {
 })
 
 app.get('/api/auth/sessions', requireAuth, async (req, res) => {
-  const context = await getSessionContext(req)
+  const currentTokenHash = getCurrentTokenHash(req)
+  const store = await readStore()
   res.json({
-    sessions: context
-      ? [{
-        id: context.session.id,
-        userAgent: context.session.userAgent,
-        ip: context.session.ip,
-        lastSeenAt: context.session.lastSeenAt,
-        current: true,
-      }]
-      : [],
+    sessions: store.sessions
+      .filter((session) => session.userId === req.auth.user.id && new Date(session.expiresAt).getTime() > Date.now())
+      .map((session) => ({
+        id: session.id,
+        userAgent: session.userAgent,
+        ip: session.ip,
+        createdAt: session.createdAt,
+        lastSeenAt: session.lastSeenAt,
+        expiresAt: session.expiresAt,
+        current: session.tokenHash === currentTokenHash,
+      })),
   })
+})
+
+app.delete('/api/auth/sessions/:sessionId', requireAuth, async (req, res) => {
+  const currentTokenHash = getCurrentTokenHash(req)
+  const sessionId = req.params.sessionId
+  const result = await updateStore((store) => {
+    const session = store.sessions.find((item) => item.id === sessionId && item.userId === req.auth.user.id)
+    if (!session) {
+      return { error: 'Session not found.' }
+    }
+
+    if (session.tokenHash === currentTokenHash) {
+      return { error: 'Use sign out to end the current session.' }
+    }
+
+    store.sessions = store.sessions.filter((item) => item.id !== sessionId)
+    return { ok: true }
+  })
+
+  if (result.error) {
+    res.status(400).json({ error: result.error })
+    return
+  }
+
+  res.json({ ok: true })
+})
+
+app.delete('/api/auth/sessions', requireAuth, async (req, res) => {
+  const currentTokenHash = getCurrentTokenHash(req)
+  await updateStore((store) => {
+    store.sessions = store.sessions.filter((session) => (
+      session.userId !== req.auth.user.id || session.tokenHash === currentTokenHash
+    ))
+  })
+
+  res.json({ ok: true })
 })
 
 app.use(express.static(distDir))
@@ -223,6 +411,10 @@ app.get(/.*/, (_req, res) => {
   res.sendFile(path.join(distDir, 'index.html'))
 })
 
-app.listen(port, () => {
-  console.log(`InEx Ledger API listening on http://localhost:${port}`)
-})
+if (process.argv[1] === __filename) {
+  app.listen(port, () => {
+    console.log(`InEx Ledger API listening on http://localhost:${port}`)
+  })
+}
+
+export default app

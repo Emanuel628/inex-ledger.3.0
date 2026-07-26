@@ -88,6 +88,19 @@ export async function getSessionContext(req) {
   return { user, session, business }
 }
 
+export function hashValue(value) {
+  return crypto.createHash('sha256').update(String(value)).digest('hex')
+}
+
+export function createOneTimeCode() {
+  return String(crypto.randomInt(100000, 1000000))
+}
+
+export function getCurrentTokenHash(req) {
+  const token = req.cookies?.[sessionCookieName]
+  return token ? hashToken(token) : ''
+}
+
 export async function requireAuth(req, res, next) {
   const context = await getSessionContext(req)
   if (!context) {
